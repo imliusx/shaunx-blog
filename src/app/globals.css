@@ -1,0 +1,1080 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Monaco, 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Ubuntu Mono', monospace;
+  }
+  
+  body {
+    @apply bg-neutral-50 text-neutral-900;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium text-neutral-900;
+    letter-spacing: -0.01em;
+    font-family: var(--font-mono);
+  }
+  
+  p {
+    @apply text-neutral-700 leading-relaxed;
+    font-family: var(--font-mono);
+  }
+  
+  a {
+    @apply text-neutral-900 transition-all duration-200;
+    text-decoration: none;
+    background-image: linear-gradient(to right, currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    font-family: var(--font-mono);
+  }
+  
+  a:hover {
+    @apply text-neutral-600;
+    background-size: 100% 1px;
+  }
+  
+  code {
+    @apply bg-neutral-100 text-neutral-800 px-1.5 py-0.5 rounded text-sm;
+    font-family: var(--font-mono);
+  }
+  
+  pre {
+    @apply bg-neutral-100 border border-neutral-200 rounded-md p-4 overflow-x-auto my-6;
+    font-family: var(--font-mono);
+  }
+  
+  pre code {
+    @apply bg-transparent p-0;
+  }
+}
+
+@layer components {
+  /* 布局组件 */
+  .content-wrapper {
+    @apply max-w-4xl mx-auto px-6 sm:px-8 lg:px-12;
+  }
+
+  /* 按钮样式 */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+    letter-spacing: -0.01em;
+    background-image: none !important;  /* 覆盖全局链接下划线 */
+  }
+
+  .btn:hover {
+    background-size: 0% 1px !important;  /* 确保按钮不显示下划线 */
+  }
+
+  .btn-primary {
+    @apply bg-neutral-900 text-neutral-50 hover:bg-neutral-800 h-11 px-6 py-2;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-primary:hover {
+    @apply text-neutral-50;  /* 确保按钮hover时文字颜色不变 */
+  }
+
+  .btn-secondary {
+    @apply bg-transparent text-neutral-900 hover:bg-neutral-100 border border-neutral-300 hover:border-neutral-400 h-11 px-6 py-2;
+  }
+
+  .btn-secondary:hover {
+    @apply text-neutral-900;  /* 确保按钮hover时文字颜色不变 */
+  }
+
+  .btn-ghost {
+    @apply text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 h-11 px-4 py-2;
+  }
+
+  /* 卡片样式 */
+  .card {
+    @apply bg-white border border-neutral-200 rounded-lg;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  /* 深色模式 */
+  .dark body {
+    @apply bg-neutral-900 text-neutral-100;
+  }
+  
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-neutral-100;
+  }
+  
+  .dark p {
+    @apply text-neutral-400;
+  }
+  
+  .dark a {
+    @apply text-neutral-100;
+    background-image: linear-gradient(to right, currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: bottom left;
+  }
+  
+  .dark a:hover {
+    @apply text-neutral-300;
+    background-size: 100% 1px;
+  }
+  
+  .dark code {
+    @apply bg-neutral-800 text-neutral-200;
+  }
+  
+  .dark pre {
+    @apply bg-neutral-800 border-neutral-700;
+  }
+  
+  .dark .btn-primary {
+    @apply bg-neutral-100 text-neutral-900 hover:bg-neutral-200;
+  }
+  
+  .dark .btn-primary:hover {
+    @apply text-neutral-900;  /* 确保深色模式下按钮hover时文字颜色不变 */
+  }
+  
+  .dark .btn-secondary {
+    @apply bg-transparent text-neutral-100 border-neutral-700 hover:border-neutral-600 hover:bg-neutral-800;
+  }
+  
+  .dark .btn-secondary:hover {
+    @apply text-neutral-100;  /* 确保深色模式下按钮hover时文字颜色不变 */
+  }
+  
+  .dark .btn-ghost {
+    @apply text-neutral-400 hover:text-neutral-100 hover:bg-neutral-800;
+  }
+  
+  .dark .card {
+    @apply bg-neutral-900 border-neutral-800;
+  }
+}
+
+/* 自定义工具类 */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ANSI Art 文本效果 */
+  .ansi-art {
+    font-family: var(--font-mono);
+    white-space: pre-line;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: currentColor;
+  }
+
+  /* 立体浮雕ANSI Art效果 */
+  .ansi-art-relief {
+    font-family: var(--font-mono);
+    text-align: center;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  .ansi-art-relief pre {
+    color: #2d3748;
+    text-shadow: 
+      1px 1px 0px #4a5568,
+      2px 2px 0px #718096,
+      3px 3px 0px #a0aec0;
+    font-weight: 800;
+    transform: perspective(500px) rotateX(15deg);
+    transform-style: preserve-3d;
+  }
+
+  /* 深色模式的立体浮雕效果 */
+  .dark .ansi-art-relief pre {
+    color: #f7fafc;
+    text-shadow: 
+      1px 1px 0px #e2e8f0,
+      2px 2px 0px #cbd5e0,
+      3px 3px 0px #a0aec0;
+  }
+
+  .ansi-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    position: relative;
+  }
+
+  /* ASCII 装饰边框 */
+  .ascii-border {
+    font-family: var(--font-mono);
+    color: currentColor;
+    opacity: 0.6;
+    font-size: 0.8em;
+    line-height: 1;
+    margin: 1rem 0;
+  }
+
+  /* 滚动条样式 */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d8 transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 dark:bg-neutral-700 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-400 dark:bg-neutral-600;
+  }
+
+  /* 目录导航样式 */
+  .toc-container {
+    @apply transition-all duration-300;
+  }
+  
+  /* 浮动按钮动画 */
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out forwards;
+  }
+}
+
+/* Prose 样式用于 Markdown 内容 */
+.prose {
+  @apply max-w-none text-neutral-700;
+  font-family: var(--font-mono);
+}
+
+.prose h1 {
+  @apply text-3xl font-medium mb-8 mt-10 text-neutral-900;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  font-family: var(--font-mono);
+}
+
+.prose h2 {
+  @apply text-2xl font-medium mb-6 mt-8 text-neutral-900;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  font-family: var(--font-mono);
+}
+
+.prose h3 {
+  @apply text-xl font-medium mb-4 mt-6 text-neutral-900;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  font-family: var(--font-mono);
+}
+
+.prose p {
+  @apply mb-6 leading-relaxed;
+  line-height: 1.65;
+  font-family: var(--font-mono);
+}
+
+.prose ul, .prose ol {
+  @apply mb-6 pl-6;
+  font-family: var(--font-mono);
+}
+
+.prose li {
+  @apply mb-2 leading-relaxed;
+  font-family: var(--font-mono);
+}
+
+.prose blockquote {
+  @apply border-l-4 border-neutral-300 pl-6 italic text-neutral-600 my-6;
+  font-style: italic;
+  font-family: var(--font-mono);
+}
+
+.prose img {
+  @apply rounded-lg my-8;
+}
+
+.prose hr {
+  @apply border-neutral-300 my-10;
+}
+
+.prose strong {
+  @apply text-neutral-900 font-semibold;
+}
+
+.prose em {
+  @apply text-neutral-800;
+}
+
+/* 深色模式的 Prose */
+.dark .prose {
+  @apply text-neutral-400;
+  font-family: var(--font-mono);
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3 {
+  @apply text-neutral-100;
+  font-family: var(--font-mono);
+}
+
+.dark .prose blockquote {
+  @apply border-neutral-600 text-neutral-500;
+  font-family: var(--font-mono);
+}
+
+.dark .prose hr {
+  @apply border-neutral-700;
+}
+
+.dark .prose strong {
+  @apply text-neutral-100 font-semibold;
+}
+
+.dark .prose em {
+  @apply text-neutral-300;
+}
+
+/* ==============================================
+   PRISM.JS CODE HIGHLIGHTING
+   ============================================== */
+
+/* Mac 风格代码块样式 */
+.prose pre[class*="language-"] {
+  @apply bg-neutral-50 text-neutral-900 rounded-lg my-6;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  tab-size: 2;
+  hyphens: none;
+  position: relative;
+  padding: 0;
+  padding-top: 2.5rem; /* 为Mac标题栏留出空间 */
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  /* Mac 窗口效果 */
+  border-radius: 8px;
+  overflow: hidden; /* 防止内容溢出圆角 */
+  text-align: left; /* 确保容器整体左对齐 */
+  direction: ltr; /* 确保文本方向 */
+}
+
+/* 代码内容区域 - 可滚动 */
+.prose pre[class*="language-"] code {
+  display: block;
+  padding: 1rem 1.5rem;
+  overflow-x: auto;
+  max-height: 600px; /* 设置最大高度 */
+  overflow-y: auto;
+  margin: 0; /* 确保没有额外边距 */
+  text-align: left !important; /* 强制设置代码内容左对齐 */
+  direction: ltr !important; /* 强制确保文本方向为从左到右 */
+}
+
+/* 强制重置所有代码相关元素的对齐方式 */
+.prose pre[class*="language-"] code,
+.prose pre[class*="language-"] code *,
+.prose pre[class*="language-"] .token {
+  text-align: left !important; /* 强制所有代码元素左对齐 */
+  direction: ltr !important; /* 强制文本方向 */
+}
+
+/* 行号样式 - 手动实现的行号系统 */
+.prose pre[class*="language-"].has-line-numbers code {
+  padding-left: 1.5rem; /* 正常内边距，行号通过绝对定位不占用空间 */
+  margin-left: 3.5rem; /* 为行号容器留出空间 */
+}
+
+/* 行号容器样式 - 完全隔离 */
+.prose pre[class*="language-"] .line-numbers-container {
+  position: absolute;
+  top: 2.5rem; /* 与标题栏高度对齐 */
+  left: 0;
+  width: 3.5rem;
+  background: rgba(0, 0, 0, 0.02);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  user-select: none;
+  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  bottom: 0; /* 确保行号容器与代码区域同高 */
+  /* 防止影响其他元素 */
+  isolation: isolate;
+}
+
+/* Mac 风格标题栏 */
+.prose pre[class*="language-"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5rem;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Mac 三个圆形按钮 */
+.prose pre[class*="language-"]::after {
+  content: '';
+  position: absolute;
+  top: 0.75rem;
+  left: 1rem;
+  width: 12px;
+  height: 12px;
+  background: #ff5f57;
+  border-radius: 50%;
+  box-shadow: 
+    18px 0 0 #ffbd2e,
+    36px 0 0 #28ca42;
+  z-index: 10;
+}
+
+/* 语言标签 - 低调显示在红绿灯按钮右边 */
+.prose pre[class*="language-"] .language-label {
+  position: absolute;
+  top: 0.6rem;
+  left: 4.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  padding: 0.125rem 0.5rem;
+  border-radius: 6px;
+  z-index: 15;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.4);
+  border: none;
+  backdrop-filter: blur(4px);
+  opacity: 0.8;
+}
+
+.prose code[class*="language-"] {
+  @apply text-neutral-900;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  tab-size: 2;
+  hyphens: none;
+  background: none;
+  padding: 0;
+}
+
+/* 深色主题 Mac 代码块 */
+.dark .prose pre[class*="language-"] {
+  @apply bg-neutral-800 text-neutral-100;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* 深色主题 Mac 标题栏 */
+.dark .prose pre[class*="language-"]::before {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 深色主题语言标签 */
+.dark .prose pre[class*="language-"] .language-label {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  border: none;
+}
+
+/* TypeScript/JavaScript 等语言的统一样式将继承基础样式 */
+
+.dark .prose code[class*="language-"] {
+  @apply text-neutral-100;
+}
+
+/* 行号单个样式 - 严格限制在行号元素内 */
+.prose pre[class*="language-"] .line-numbers-container .line-number {
+  display: block;
+  text-align: right !important; /* 使用!important确保仅对行号生效 */
+  padding-right: 0.8rem;
+  line-height: 1.7;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  box-sizing: border-box;
+  /* 确保不影响其他元素 */
+  contain: layout style;
+}
+
+/* 深色主题行号样式 */
+.dark .prose pre[class*="language-"] .line-numbers-container {
+  background: rgba(255, 255, 255, 0.03);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .prose pre[class*="language-"] .line-numbers-container .line-number {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 浅色主题 Token 颜色 */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  @apply text-neutral-500;
+  font-style: italic;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.string,
+.token.attr-value {
+  @apply text-green-700;
+}
+
+.token.punctuation,
+.token.operator {
+  @apply text-neutral-600;
+}
+
+.token.entity,
+.token.url,
+.token.symbol,
+.token.number,
+.token.boolean,
+.token.variable,
+.token.constant,
+.token.property,
+.token.regex,
+.token.inserted {
+  @apply text-blue-600;
+}
+
+.token.atrule,
+.token.keyword,
+.token.attr-name,
+.language-autohotkey .token.selector {
+  @apply text-purple-600;
+}
+
+.token.function,
+.token.deleted,
+.token.tag,
+.language-autohotkey .token.keyword {
+  @apply text-red-600;
+}
+
+.token.function-name,
+.token.class-name {
+  @apply text-yellow-700;
+}
+
+.token.selector,
+.token.char,
+.token.builtin {
+  @apply text-cyan-600;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* 深色主题 Token 颜色 */
+.dark .token.comment,
+.dark .token.prolog,
+.dark .token.doctype,
+.dark .token.cdata {
+  @apply text-neutral-500;
+  font-style: italic;
+}
+
+.dark .token.string,
+.dark .token.attr-value {
+  @apply text-green-400;
+}
+
+.dark .token.punctuation,
+.dark .token.operator {
+  @apply text-neutral-400;
+}
+
+.dark .token.entity,
+.dark .token.url,
+.dark .token.symbol,
+.dark .token.number,
+.dark .token.boolean,
+.dark .token.variable,
+.dark .token.constant,
+.dark .token.property,
+.dark .token.regex,
+.dark .token.inserted {
+  @apply text-blue-400;
+}
+
+.dark .token.atrule,
+.dark .token.keyword,
+.dark .token.attr-name {
+  @apply text-purple-400;
+}
+
+.dark .token.function,
+.dark .token.deleted,
+.dark .token.tag {
+  @apply text-red-400;
+}
+
+.dark .token.function-name,
+.dark .token.class-name {
+  @apply text-yellow-400;
+}
+
+.dark .token.selector,
+.dark .token.char,
+.dark .token.builtin {
+  @apply text-cyan-400;
+}
+
+/* 复制按钮样式 - Mac 风格适配 */
+.copy-code-btn {
+  transition: all 0.2s ease-in-out;
+  backdrop-filter: blur(8px);
+  /* 调整位置避开 Mac 标题栏 */
+  top: 0.5rem !important;
+  right: 1rem !important;
+}
+
+.copy-code-btn:hover {
+  transform: scale(1.05);
+}
+
+/* 浅色主题复制按钮 */
+.prose pre[class*="language-"] .copy-code-btn {
+  @apply bg-neutral-900/10 hover:bg-neutral-900/20 text-neutral-700 hover:text-neutral-900;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 深色主题复制按钮 */
+.dark .prose pre[class*="language-"] .copy-code-btn {
+  @apply bg-white/10 hover:bg-white/20 text-white/70 hover:text-white/90;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 复制成功状态 */
+.copy-code-btn.copied {
+  @apply !bg-green-500/20 !text-green-400 !border-green-500/30;
+  transform: scale(1.05);
+}
+
+/* 行内代码样式 */
+.prose :not(pre) > code {
+  @apply bg-neutral-100 text-neutral-800 px-1.5 py-0.5 rounded text-sm;
+  font-family: var(--font-mono);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark .prose :not(pre) > code {
+  @apply bg-neutral-800 text-neutral-200;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 代码块滚动条样式 */
+.prose pre[class*="language-"]::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.prose pre[class*="language-"]::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+  border-radius: 4px;
+}
+
+.prose pre[class*="language-"]::-webkit-scrollbar-thumb {
+  @apply bg-neutral-400;
+  border-radius: 4px;
+}
+
+.prose pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-500;
+}
+
+.dark .prose pre[class*="language-"]::-webkit-scrollbar-track {
+  @apply bg-neutral-800;
+}
+
+.dark .prose pre[class*="language-"]::-webkit-scrollbar-thumb {
+  @apply bg-neutral-600;
+}
+
+.dark .prose pre[class*="language-"]::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-500;
+}
+
+/* 代码选中样式 */
+.prose pre[class*="language-"] ::selection {
+  @apply bg-blue-200 text-neutral-900;
+}
+
+.dark .prose pre[class*="language-"] ::selection {
+  @apply bg-blue-900 text-neutral-100;
+}
+
+/* 深色主题 Token 颜色 */
+
+.dark .token.comment,
+.dark .token.prolog,
+.dark .token.doctype,
+.dark .token.cdata {
+  @apply text-neutral-600;
+}
+
+.dark .token.string,
+.dark .token.attr-value {
+  @apply text-green-400;
+}
+
+.dark .token.punctuation,
+.dark .token.operator {
+  @apply text-neutral-400;
+}
+
+.dark .token.entity,
+.dark .token.url,
+.dark .token.symbol,
+.dark .token.number,
+.dark .token.boolean,
+.dark .token.variable,
+.dark .token.constant,
+.dark .token.property,
+.dark .token.regex,
+.dark .token.inserted {
+  @apply text-blue-400;
+}
+
+.dark .token.atrule,
+.dark .token.keyword,
+.dark .token.attr-name {
+  @apply text-purple-400;
+}
+
+.dark .token.function,
+.dark .token.deleted,
+.dark .token.tag {
+  @apply text-red-400;
+}
+
+.dark .token.function-name,
+.dark .token.class-name {
+  @apply text-yellow-400;
+}
+
+.dark .token.selector,
+.dark .token.char,
+.dark .token.builtin {
+  @apply text-cyan-400;
+}
+
+/* ==============================================
+   LOADING ANIMATIONS & TRANSITIONS
+   ============================================== */
+
+/* Shimmer Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(245, 245, 245, 0.6) 25%,
+    rgba(232, 232, 232, 0.8) 50%,
+    rgba(245, 245, 245, 0.6) 75%
+  );
+  background-size: 200px 100%;
+  animation: shimmer 2.5s infinite ease-in-out;
+}
+
+.dark .shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(64, 64, 64, 0.4) 25%,
+    rgba(82, 82, 82, 0.6) 50%,
+    rgba(64, 64, 64, 0.4) 75%
+  );
+  background-size: 200px 100%;
+}
+
+/* Skeleton Pulse Animation */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.skeleton {
+  @apply bg-gray-200 dark:bg-gray-700 rounded;
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Content Fade In Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.fade-in-delayed {
+  animation: fadeIn 0.6s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+@keyframes terminalBlink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 0.7em;
+  height: 2px;
+  background: currentColor;
+  transform: translateY(0.45em);
+  animation: terminalBlink 1s steps(1, end) infinite;
+}
+
+/* Staggered Animation */
+.stagger-children > * {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* Loading Dots Animation */
+@keyframes loadingDots {
+  0%, 20% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  80%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.loading-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.loading-dots::before,
+.loading-dots::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  animation: loadingDots 1.4s infinite ease-in-out;
+}
+
+.loading-dots::before {
+  animation-delay: 0s;
+}
+
+.loading-dots::after {
+  animation-delay: 0.2s;
+}
+
+.loading-dots {
+  position: relative;
+}
+
+.loading-dots::after {
+  position: absolute;
+  left: 10px;
+}
+
+/* Card Loading State */
+.card-loading {
+  @apply relative overflow-hidden;
+}
+
+.card-loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2.5s infinite;
+  z-index: 1;
+}
+
+.dark .card-loading::before {
+  background: linear-gradient(
+    90deg,
+    rgba(64, 64, 64, 0) 0%,
+    rgba(82, 82, 82, 0.4) 50%,
+    rgba(64, 64, 64, 0) 100%
+  );
+}
+
+/* Cross-fade Transition for Loading to Content */
+@keyframes crossFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes crossFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cross-fade-out {
+  animation: crossFadeOut 0.4s ease-out forwards;
+}
+
+.cross-fade-in {
+  animation: crossFadeIn 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Loading to Content Container */
+.loading-container {
+  position: relative;
+  min-height: inherit;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: inherit;
+}
+
+.content-layer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Smooth Transition Utilities */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-bounce {
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
