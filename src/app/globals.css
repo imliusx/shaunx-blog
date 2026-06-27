@@ -6,6 +6,14 @@
   :root {
     --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Monaco, 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Ubuntu Mono', monospace;
   }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
+  }
   
   body {
     @apply bg-neutral-50 text-neutral-900;
@@ -1068,6 +1076,10 @@
 .content-layer {
   position: relative;
   z-index: 2;
+}
+
+.home-page-shell .content-layer {
+  height: 100%;
 }
 
 /* Smooth Transition Utilities */

@@ -8,11 +8,14 @@ import { LoadingTransition } from '@/components/LoadingComponents';
 
 export default function HomePage() {
   const { data: config, loading, error } = useConfig();
+  const homeViewportClass = 'h-[calc(100svh-72px)] max-h-[calc(100svh-72px)] overflow-hidden md:h-[calc(100dvh-72px)] md:max-h-[calc(100dvh-72px)]';
+  const homeContentClass = 'content-wrapper h-full max-h-full overflow-hidden';
+  const homeSectionClass = 'flex h-full min-h-0 flex-col items-center justify-center overflow-hidden py-6 text-center md:py-10';
 
   if (error) {
     return (
-      <div className="content-wrapper h-[calc(100dvh-72px)] overflow-hidden">
-        <section className="flex h-full items-center justify-center text-center fade-in">
+      <div className={`${homeViewportClass} content-wrapper`}>
+        <section className="flex h-full min-h-0 items-center justify-center overflow-hidden text-center fade-in">
           <div className="text-red-500 dark:text-red-400">
             <h2 className="text-2xl font-bold mb-4">加载失败</h2>
             <p>{error}</p>
@@ -23,8 +26,8 @@ export default function HomePage() {
   }
 
   const skeletonContent = (
-    <div className="content-wrapper h-[calc(100dvh-72px)] overflow-hidden">
-      <section className="flex h-full flex-col items-center justify-center py-8 text-center md:py-10">
+    <div className={homeContentClass}>
+      <section className={homeSectionClass}>
         <div className="mb-8 md:mb-10">
           <div className="h-16 w-64 mx-auto mb-4 shimmer rounded md:w-96" />
         </div>
@@ -42,9 +45,9 @@ export default function HomePage() {
   );
 
   const actualContent = (
-    <div className="content-wrapper h-[calc(100dvh-72px)] overflow-hidden">
+    <div className={homeContentClass}>
       {/* Hero + Introduction Section */}
-      <section className="flex h-full flex-col items-center justify-center py-8 text-center md:py-10 fade-in-up">
+      <section className={`${homeSectionClass} fade-in-up`}>
         <div className="mb-8 md:mb-10">
           <TypewriterTitle 
             text={config?.title || ''}
@@ -90,6 +93,7 @@ export default function HomePage() {
     <LoadingTransition
       loading={loading || !config}
       skeleton={skeletonContent}
+      className={`${homeViewportClass} home-page-shell`}
       delay={300}
     >
       {actualContent}

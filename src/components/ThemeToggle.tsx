@@ -4,13 +4,12 @@ import { useState, useEffect } from 'react';
 import { Moon, Sun } from 'lucide-react';
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    // 检查本地存储或系统偏好
+    // 默认进入暗色模式；用户手动切换后按本地存储为准。
     const saved = localStorage.getItem('theme');
-    const isDarkMode = saved === 'dark' || 
-      (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const isDarkMode = saved === 'light' ? false : true;
     
     setIsDark(isDarkMode);
     document.documentElement.classList.toggle('dark', isDarkMode);
