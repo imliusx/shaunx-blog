@@ -22,8 +22,8 @@ services:
     volumes:
       # 使用单一数据目录，在其下创建 content, config 子目录
       # images 存储在 content/images 中，通过 /api/images API 访问
-      - ${DATA_PATH:-./blog-data}/content:/app/content
-      - ${DATA_PATH:-./blog-data}/config:/app/config
+      - ${DATA_PATH:-./shaunx-blog-data}/content:/app/content
+      - ${DATA_PATH:-./shaunx-blog-data}/config:/app/config
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]

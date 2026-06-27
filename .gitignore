@@ -13,8 +13,12 @@ node_modules/
 # 生产构建
 /build
 
+# 本地/服务器持久化数据
+/shaunx-blog-data/
+
 # 环境变量
 .env*.local
+.env
 
 # Vercel
 .vercel

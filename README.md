@@ -93,6 +93,7 @@ docker compose -f docker/docker-compose.yml down
 ## 📚 文档
 
 - [用户使用指南 (中文)](docs/用户使用指南.md) - 详细的博客使用说明
+- [运维操作手册](docs/运维操作手册.md) - 配置、启动、停止、更新、备份和卸载
 - [User Guide (English)](docs/USER_GUIDE.md) - Complete user guide in English
 - [API 接口文档](#-api-接口) - API 接口说明
 
@@ -248,7 +249,7 @@ BLOG_PORT=3131
 REVALIDATE_SECRET=your-secret-key
 
 # 数据目录路径
-DATA_PATH=./blog-data
+DATA_PATH=./shaunx-blog-data
 
 # 用户权限配置（Linux）
 USER_ID=1001
@@ -264,7 +265,7 @@ TWITTER_URL=https://twitter.com/username
 ### 数据目录结构
 
 ```
-blog-data/
+shaunx-blog-data/
 ├── content/
 │   ├── posts/          # 文章目录
 │   ├── pages/          # 页面目录
