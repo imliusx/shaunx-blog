@@ -20,10 +20,10 @@ Usage: scripts/deploy-content.sh [options]
 Deploy Shaunx Blog from Git into the running server.
 
 Modes:
-  --mode auto      Detect changed files. content/ changes use content mode;
+  --mode auto      Detect changed files. content/ and config/ changes use content mode;
                    all other changes use app mode. Default.
-  --mode content   Sync content/ into DATA_PATH/content and restart the container.
-  --mode app       Sync content/ and rebuild/recreate the Docker app.
+  --mode content   Sync content/ and config/ into DATA_PATH and restart the container.
+  --mode app       Sync content/ and config/, then rebuild/recreate the Docker app.
 
 Options:
   --branch <name>       Git branch to deploy. Default: main
@@ -123,6 +123,7 @@ APP_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 ENV_FILE="$APP_DIR/.env"
 COMPOSE_FILE="$APP_DIR/docker/docker-compose.yml"
 SOURCE_CONTENT="$APP_DIR/content"
+SOURCE_CONFIG="$APP_DIR/config"
 ACTION="$MODE"
 CHANGED_FILES=""
 
@@ -157,12 +158,12 @@ read_env_value() {
   ' "$file"
 }
 
-all_changes_are_content() {
+all_changes_are_runtime_data() {
   local files="$1"
   [[ -n "$files" ]] || return 0
   while IFS= read -r file; do
     [[ -z "$file" ]] && continue
-    [[ "$file" == content/* ]] || return 1
+    [[ "$file" == content/* || "$file" == config/* ]] || return 1
   done <<< "$files"
   return 0
 }
@@ -189,6 +190,21 @@ sync_content() {
 
   log INFO "Syncing content"
   rsync "${rsync_args[@]}" "$SOURCE_CONTENT/" "$TARGET_CONTENT/"
+}
+
+sync_config() {
+  if [[ ! -d "$SOURCE_CONFIG" ]]; then
+    log WARN "Source config directory not found: $SOURCE_CONFIG"
+    return
+  fi
+
+  mkdir -p "$TARGET_CONFIG"
+
+  local rsync_args=(-av)
+  [[ $DRY_RUN -eq 1 ]] && rsync_args+=(--dry-run)
+
+  log INFO "Syncing config"
+  rsync "${rsync_args[@]}" "$SOURCE_CONFIG/" "$TARGET_CONFIG/"
 }
 
 restart_content_service() {
@@ -231,10 +247,13 @@ if [[ "$DATA_PATH" != /* ]]; then
 fi
 
 TARGET_CONTENT="$DATA_PATH/content"
+TARGET_CONFIG="$DATA_PATH/config"
 
 log INFO "App dir       : $APP_DIR"
 log INFO "Source content: $SOURCE_CONTENT"
 log INFO "Target content: $TARGET_CONTENT"
+log INFO "Source config : $SOURCE_CONFIG"
+log INFO "Target config : $TARGET_CONFIG"
 log INFO "Git source    : $REMOTE/$BRANCH"
 log INFO "Mode          : $MODE"
 [[ $DELETE -eq 1 ]] && log WARN "Delete mode   : enabled; data content will mirror Git content"
@@ -261,7 +280,7 @@ if [[ $SKIP_GIT -eq 0 ]]; then
   print_changed_files "$CHANGED_FILES"
 
   if [[ "$MODE" == "auto" ]]; then
-    if all_changes_are_content "$CHANGED_FILES"; then
+    if all_changes_are_runtime_data "$CHANGED_FILES"; then
       ACTION="content"
     else
       ACTION="app"
@@ -288,6 +307,7 @@ fi
 case "$ACTION" in
   content)
     sync_content
+    sync_config
     if [[ $DRY_RUN -eq 1 ]]; then
       log OK "Dry run complete. No files were changed."
       exit 0
@@ -296,6 +316,7 @@ case "$ACTION" in
     ;;
   app)
     sync_content
+    sync_config
     if [[ $DRY_RUN -eq 1 ]]; then
       log OK "Dry run complete. No files were changed."
       exit 0

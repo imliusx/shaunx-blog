@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { LoadingTransition } from '@/components/LoadingComponents';
 import { PostCard } from '@/components/PostCard';
 import { useCategoryPosts } from '@/hooks/useCategories';
+import { CategoryIcon } from '@/components/CategoryIcon';
 
 export default function CategoryPostsPage() {
   const params = useParams();
@@ -68,9 +69,10 @@ export default function CategoryPostsPage() {
 
       <div className="mb-8 fade-in-up">
         <div className="mb-4 flex items-center space-x-3">
-          <div className="border border-neutral-300 p-3 dark:border-neutral-700">
-            <Folder className="h-6 w-6" />
-          </div>
+          <CategoryIcon
+            category={category}
+            className="h-9 w-9 text-neutral-500 dark:text-neutral-400"
+          />
           <div>
             <h1 className="text-3xl font-bold">{category}</h1>
             <p className="text-muted-foreground">

@@ -5,6 +5,7 @@ import { Folder } from 'lucide-react';
 import { useCategories } from '@/hooks/useCategories';
 import { LoadingTransition } from '@/components/LoadingComponents';
 import { encodeSlug } from '@/lib/slug';
+import { CategoryIcon } from '@/components/CategoryIcon';
 
 export default function CategoriesPage() {
   const { categories, loading, error } = useCategories();
@@ -68,9 +69,12 @@ export default function CategoriesPage() {
             className="card no-link-underline p-4 transition-all duration-200 group hover:border-neutral-400 hover:bg-neutral-50 dark:hover:border-neutral-600 dark:hover:bg-neutral-800"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2.5">
-                <div className="p-1.5 bg-neutral-100 rounded group-hover:bg-neutral-200 transition-colors dark:bg-neutral-800 dark:group-hover:bg-neutral-700">
-                  <Folder className="h-4 w-4 text-neutral-600 transition-colors group-hover:text-neutral-900 dark:text-neutral-400 dark:group-hover:text-neutral-100" />
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-neutral-100 rounded group-hover:bg-neutral-200 transition-colors dark:bg-neutral-800 dark:group-hover:bg-neutral-700">
+                  <CategoryIcon
+                    category={category}
+                    className="h-5 w-5 text-neutral-600 transition-colors group-hover:text-neutral-900 dark:text-neutral-400 dark:group-hover:text-neutral-100"
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold text-base group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
