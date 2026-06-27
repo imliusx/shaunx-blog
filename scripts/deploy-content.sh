@@ -3,6 +3,7 @@ set -Eeuo pipefail
 
 REMOTE="origin"
 BRANCH="main"
+MODE="auto"
 DELETE=1
 RESTART=1
 DRY_RUN=0
@@ -16,20 +17,24 @@ usage() {
   cat <<USAGE
 Usage: scripts/deploy-content.sh [options]
 
-Deploy Markdown content from the Git checkout into the runtime data directory.
-Git content is treated as the source of truth for content/posts, content/pages,
-and content/images.
+Deploy Shaunx Blog from Git into the running server.
+
+Modes:
+  --mode auto      Detect changed files. content/ changes use content mode;
+                   all other changes use app mode. Default.
+  --mode content   Sync content/ into DATA_PATH/content and restart the container.
+  --mode app       Sync content/ and rebuild/recreate the Docker app.
 
 Options:
   --branch <name>       Git branch to deploy. Default: main
   --remote <name>       Git remote to fetch. Default: origin
   --data-path <path>    Override DATA_PATH from .env
-  --only-on-change      Exit without syncing when local HEAD already matches remote
-  --force               Sync even when --only-on-change sees no new remote commit
+  --only-on-change      Exit when local HEAD already matches remote
+  --force               Deploy even when --only-on-change sees no new remote commit
   --no-delete           Do not delete files that exist only in the data directory
-  --no-restart          Do not restart the Docker service after syncing content
-  --skip-git            Do not fetch/reset Git; only sync current checkout content
-  --dry-run             Show planned rsync changes without modifying files
+  --no-restart          In content mode, sync without restarting; in app mode, build only
+  --skip-git            Do not fetch/reset Git; deploy the current checkout
+  --dry-run             Show planned changes without modifying files
   -h, --help            Show this help
 
 Typical server usage:
@@ -37,7 +42,7 @@ Typical server usage:
   scripts/deploy-content.sh
 
 Automatic timer usage:
-  scripts/deploy-content.sh --only-on-change
+  scripts/deploy-content.sh --mode auto --only-on-change
 
 Preview changes:
   scripts/deploy-content.sh --dry-run
@@ -63,6 +68,15 @@ while [[ $# -gt 0 ]]; do
     --remote)
       [[ $# -ge 2 ]] || fail "--remote requires a value"
       REMOTE="$2"
+      shift 2
+      ;;
+    --mode)
+      [[ $# -ge 2 ]] || fail "--mode requires a value"
+      MODE="$2"
+      case "$MODE" in
+        auto|content|app) ;;
+        *) fail "--mode must be one of: auto, content, app" ;;
+      esac
       shift 2
       ;;
     --data-path)
@@ -109,6 +123,8 @@ APP_DIR=$(cd -- "$SCRIPT_DIR/.." && pwd)
 ENV_FILE="$APP_DIR/.env"
 COMPOSE_FILE="$APP_DIR/docker/docker-compose.yml"
 SOURCE_CONTENT="$APP_DIR/content"
+ACTION="$MODE"
+CHANGED_FILES=""
 
 command -v git >/dev/null 2>&1 || fail "git is required"
 command -v rsync >/dev/null 2>&1 || fail "rsync is required"
@@ -116,7 +132,7 @@ command -v rsync >/dev/null 2>&1 || fail "rsync is required"
 if command -v flock >/dev/null 2>&1; then
   exec 9>"$LOCK_FILE"
   if ! flock -n 9; then
-    log WARN "Another content deploy is already running. Exiting."
+    log WARN "Another deploy is already running. Exiting."
     exit 0
   fi
 else
@@ -141,6 +157,68 @@ read_env_value() {
   ' "$file"
 }
 
+all_changes_are_content() {
+  local files="$1"
+  [[ -n "$files" ]] || return 0
+  while IFS= read -r file; do
+    [[ -z "$file" ]] && continue
+    [[ "$file" == content/* ]] || return 1
+  done <<< "$files"
+  return 0
+}
+
+print_changed_files() {
+  local files="$1"
+  if [[ -z "$files" ]]; then
+    log INFO "Changed files : none"
+    return
+  fi
+
+  log INFO "Changed files :"
+  while IFS= read -r file; do
+    [[ -n "$file" ]] && printf '  %s\n' "$file"
+  done <<< "$files"
+}
+
+sync_content() {
+  mkdir -p "$TARGET_CONTENT"
+
+  local rsync_args=(-av)
+  [[ $DELETE -eq 1 ]] && rsync_args+=(--delete)
+  [[ $DRY_RUN -eq 1 ]] && rsync_args+=(--dry-run)
+
+  log INFO "Syncing content"
+  rsync "${rsync_args[@]}" "$SOURCE_CONTENT/" "$TARGET_CONTENT/"
+}
+
+restart_content_service() {
+  if [[ $RESTART -eq 0 ]]; then
+    log WARN "Skipping Docker restart"
+    return
+  fi
+
+  command -v docker >/dev/null 2>&1 || fail "docker is required for restart"
+  [[ -f "$ENV_FILE" ]] || fail "Missing .env file: $ENV_FILE"
+  [[ -f "$COMPOSE_FILE" ]] || fail "Missing compose file: $COMPOSE_FILE"
+
+  log INFO "Restarting Docker service"
+  docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" restart blog
+}
+
+deploy_app() {
+  command -v docker >/dev/null 2>&1 || fail "docker is required for app deploy"
+  [[ -f "$ENV_FILE" ]] || fail "Missing .env file: $ENV_FILE"
+  [[ -f "$COMPOSE_FILE" ]] || fail "Missing compose file: $COMPOSE_FILE"
+
+  if [[ $RESTART -eq 0 ]]; then
+    log INFO "Building Docker service without recreating container"
+    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" build blog
+  else
+    log INFO "Rebuilding and recreating Docker service"
+    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" up -d --build blog
+  fi
+}
+
 if [[ -n "$DATA_PATH_OVERRIDE" ]]; then
   DATA_PATH="$DATA_PATH_OVERRIDE"
 else
@@ -158,6 +236,7 @@ log INFO "App dir       : $APP_DIR"
 log INFO "Source content: $SOURCE_CONTENT"
 log INFO "Target content: $TARGET_CONTENT"
 log INFO "Git source    : $REMOTE/$BRANCH"
+log INFO "Mode          : $MODE"
 [[ $DELETE -eq 1 ]] && log WARN "Delete mode   : enabled; data content will mirror Git content"
 [[ $ONLY_ON_CHANGE -eq 1 ]] && log INFO "Change check  : enabled"
 [[ $DRY_RUN -eq 1 ]] && log WARN "Dry run       : enabled"
@@ -178,35 +257,54 @@ if [[ $SKIP_GIT -eq 0 ]]; then
     exit 0
   fi
 
+  CHANGED_FILES=$(git diff --name-only "$LOCAL_HEAD..$REMOTE_HEAD")
+  print_changed_files "$CHANGED_FILES"
+
+  if [[ "$MODE" == "auto" ]]; then
+    if all_changes_are_content "$CHANGED_FILES"; then
+      ACTION="content"
+    else
+      ACTION="app"
+    fi
+  fi
+
+  log INFO "Deploy action : $ACTION"
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log OK "Dry run complete. No files were changed."
+    exit 0
+  fi
+
   log INFO "Resetting checkout to $REMOTE/$BRANCH"
   git reset --hard "$REMOTE/$BRANCH"
 else
   log WARN "Skipping Git fetch/reset"
+  if [[ "$MODE" == "auto" ]]; then
+    ACTION="content"
+  fi
+  log INFO "Deploy action : $ACTION"
 fi
 
-mkdir -p "$TARGET_CONTENT"
+case "$ACTION" in
+  content)
+    sync_content
+    if [[ $DRY_RUN -eq 1 ]]; then
+      log OK "Dry run complete. No files were changed."
+      exit 0
+    fi
+    restart_content_service
+    ;;
+  app)
+    sync_content
+    if [[ $DRY_RUN -eq 1 ]]; then
+      log OK "Dry run complete. No files were changed."
+      exit 0
+    fi
+    deploy_app
+    ;;
+  *)
+    fail "Unknown deploy action: $ACTION"
+    ;;
+esac
 
-RSYNC_ARGS=(-av)
-[[ $DELETE -eq 1 ]] && RSYNC_ARGS+=(--delete)
-[[ $DRY_RUN -eq 1 ]] && RSYNC_ARGS+=(--dry-run)
-
-log INFO "Syncing content"
-rsync "${RSYNC_ARGS[@]}" "$SOURCE_CONTENT/" "$TARGET_CONTENT/"
-
-if [[ $DRY_RUN -eq 1 ]]; then
-  log OK "Dry run complete. No files were changed."
-  exit 0
-fi
-
-if [[ $RESTART -eq 1 ]]; then
-  command -v docker >/dev/null 2>&1 || fail "docker is required for restart"
-  [[ -f "$ENV_FILE" ]] || fail "Missing .env file: $ENV_FILE"
-  [[ -f "$COMPOSE_FILE" ]] || fail "Missing compose file: $COMPOSE_FILE"
-
-  log INFO "Restarting Docker service"
-  docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" restart blog
-else
-  log WARN "Skipping Docker restart"
-fi
-
-log OK "Content deploy complete"
+log OK "Deploy complete"
