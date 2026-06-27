@@ -1,6 +1,7 @@
 ---
 title: git-flow
 date: 2026-06-27
+category: AI栈
 tags:
   - Java
   - NextJS
