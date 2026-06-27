@@ -1,6 +1,7 @@
 ---
 title: first
 date: 2026-06-27
+category: 原理
 tags:
   - Java
   - NextJS
