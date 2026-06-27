@@ -65,12 +65,7 @@ export default function HomePage() {
             className="text-4xl md:text-6xl lg:text-7xl text-neutral-900 dark:text-neutral-100 mb-4"
           />
         </div>
-        
-        <p className="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 mb-5 max-w-2xl mx-auto leading-relaxed fade-in-delayed md:mb-8">
-          {config?.description || ''}
-        </p>
-        
-        {/* Introduction content */}
+
         <div className="max-w-3xl mx-auto fade-in-delayed" style={{ animationDelay: '0.4s' }}>
           <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed text-base">
             {config?.introduction || ''}
