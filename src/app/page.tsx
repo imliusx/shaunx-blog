@@ -99,14 +99,14 @@ export default function HomePage() {
         >
           <div className="mb-2 text-left text-sm text-neutral-500 dark:text-neutral-500">
             <span aria-hidden="true">$ </span>
-            cd ./categories
+            ls ./categories
           </div>
           <div className="grid grid-cols-2 gap-x-5 gap-y-1 border-y border-neutral-300 py-3 dark:border-neutral-700 md:gap-x-10">
             {POST_CATEGORIES.map(category => (
               <Link
                 key={category}
                 href={`/categories/${encodeSlug(category)}` as any}
-                className="no-link-underline group flex items-center gap-2 px-1.5 py-1.5 text-left text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 md:text-base"
+                className="no-link-underline group flex items-center justify-center gap-2 px-1.5 py-1.5 text-center text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 md:text-base"
               >
                 <span className="text-neutral-500 dark:text-neutral-500" aria-hidden="true">
                   $
