@@ -92,6 +92,17 @@ scripts/deploy-content.sh
 scripts/deploy-content.sh --dry-run
 ```
 
+### 自动部署内容
+
+服务器可以安装 systemd timer，每分钟检查 GitHub 是否有新提交。没有新提交时不会同步或重启；有新提交时执行：
+
+```bash
+cd /opt/shaunx-blog
+scripts/deploy-content.sh --only-on-change
+```
+
+详细安装和停止方式见 [运维操作手册](docs/运维操作手册.md)。
+
 ### 手动 Docker 部署
 
 ```bash

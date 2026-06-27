@@ -7,7 +7,10 @@ DELETE=1
 RESTART=1
 DRY_RUN=0
 SKIP_GIT=0
+ONLY_ON_CHANGE=0
+FORCE=0
 DATA_PATH_OVERRIDE=""
+LOCK_FILE="/tmp/shaunx-blog-content-deploy.lock"
 
 usage() {
   cat <<USAGE
@@ -21,6 +24,8 @@ Options:
   --branch <name>       Git branch to deploy. Default: main
   --remote <name>       Git remote to fetch. Default: origin
   --data-path <path>    Override DATA_PATH from .env
+  --only-on-change      Exit without syncing when local HEAD already matches remote
+  --force               Sync even when --only-on-change sees no new remote commit
   --no-delete           Do not delete files that exist only in the data directory
   --no-restart          Do not restart the Docker service after syncing content
   --skip-git            Do not fetch/reset Git; only sync current checkout content
@@ -30,6 +35,9 @@ Options:
 Typical server usage:
   cd /opt/shaunx-blog
   scripts/deploy-content.sh
+
+Automatic timer usage:
+  scripts/deploy-content.sh --only-on-change
 
 Preview changes:
   scripts/deploy-content.sh --dry-run
@@ -61,6 +69,14 @@ while [[ $# -gt 0 ]]; do
       [[ $# -ge 2 ]] || fail "--data-path requires a value"
       DATA_PATH_OVERRIDE="$2"
       shift 2
+      ;;
+    --only-on-change)
+      ONLY_ON_CHANGE=1
+      shift
+      ;;
+    --force)
+      FORCE=1
+      shift
       ;;
     --no-delete)
       DELETE=0
@@ -96,6 +112,16 @@ SOURCE_CONTENT="$APP_DIR/content"
 
 command -v git >/dev/null 2>&1 || fail "git is required"
 command -v rsync >/dev/null 2>&1 || fail "rsync is required"
+
+if command -v flock >/dev/null 2>&1; then
+  exec 9>"$LOCK_FILE"
+  if ! flock -n 9; then
+    log WARN "Another content deploy is already running. Exiting."
+    exit 0
+  fi
+else
+  log WARN "flock not found; deploy lock is disabled"
+fi
 
 [[ -d "$APP_DIR/.git" ]] || fail "Not a Git checkout: $APP_DIR"
 [[ -d "$SOURCE_CONTENT" ]] || fail "Source content directory not found: $SOURCE_CONTENT"
@@ -133,6 +159,7 @@ log INFO "Source content: $SOURCE_CONTENT"
 log INFO "Target content: $TARGET_CONTENT"
 log INFO "Git source    : $REMOTE/$BRANCH"
 [[ $DELETE -eq 1 ]] && log WARN "Delete mode   : enabled; data content will mirror Git content"
+[[ $ONLY_ON_CHANGE -eq 1 ]] && log INFO "Change check  : enabled"
 [[ $DRY_RUN -eq 1 ]] && log WARN "Dry run       : enabled"
 
 cd "$APP_DIR"
@@ -140,6 +167,17 @@ cd "$APP_DIR"
 if [[ $SKIP_GIT -eq 0 ]]; then
   log INFO "Fetching latest Git content"
   git fetch "$REMOTE" "$BRANCH"
+
+  LOCAL_HEAD=$(git rev-parse HEAD)
+  REMOTE_HEAD=$(git rev-parse "$REMOTE/$BRANCH")
+  log INFO "Local HEAD    : $(git rev-parse --short HEAD)"
+  log INFO "Remote HEAD   : $(git rev-parse --short "$REMOTE/$BRANCH")"
+
+  if [[ $ONLY_ON_CHANGE -eq 1 && $FORCE -eq 0 && "$LOCAL_HEAD" == "$REMOTE_HEAD" ]]; then
+    log OK "No remote changes. Deployment skipped."
+    exit 0
+  fi
+
   log INFO "Resetting checkout to $REMOTE/$BRANCH"
   git reset --hard "$REMOTE/$BRANCH"
 else
