@@ -10,6 +10,7 @@ import rehypeStringify from 'rehype-stringify';
 import { Post, PostMeta, PostFrontmatter } from '@/types';
 import { calculateReadingTime, generateExcerpt } from './utils';
 import { decodeSlug } from './slug';
+import { POST_CATEGORIES, normalizeCategory } from './categories';
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
@@ -126,6 +127,7 @@ function postFromFileInfo(info: PostFileInfo): Post {
     slug: info.publicSlug,
     title: info.frontmatter.title,
     date: info.frontmatter.date,
+    category: normalizeCategory(info.frontmatter.category),
     description: info.frontmatter.description,
     content: info.content,
     tags: info.frontmatter.tags || [],
@@ -165,6 +167,21 @@ export function getPostsByTag(tag: string): PostMeta[] {
       postTag.toLowerCase() === tag.toLowerCase()
     )
   );
+}
+
+export function getPostsByCategory(category: string): PostMeta[] {
+  const normalizedCategory = decodeSlug(category).toLowerCase();
+  return getAllPosts().filter(post =>
+    post.category?.toLowerCase() === normalizedCategory
+  );
+}
+
+export function getAllCategories(): { category: string; count: number }[] {
+  const allPosts = getAllPosts();
+  return POST_CATEGORIES.map(category => ({
+    category,
+    count: allPosts.filter(post => post.category === category).length,
+  }));
 }
 
 export function getAllTags(): { tag: string; count: number }[] {

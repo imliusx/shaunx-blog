@@ -31,16 +31,16 @@ export default function TagsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="card p-6 card-loading min-h-[120px]">
+          <div key={i} className="card p-4 card-loading min-h-[96px]">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 shimmer rounded-lg"></div>
+              <div className="flex items-center space-x-2.5">
+                <div className="w-8 h-8 shimmer rounded"></div>
                 <div className="space-y-2">
-                  <div className="h-5 w-16 shimmer rounded"></div>
-                  <div className="h-4 w-12 shimmer rounded"></div>
+                  <div className="h-4 w-16 shimmer rounded"></div>
+                  <div className="h-3 w-20 shimmer rounded"></div>
                 </div>
               </div>
-              <div className="h-6 w-6 shimmer rounded"></div>
+              <div className="h-5 w-5 shimmer rounded"></div>
             </div>
           </div>
         ))}
@@ -66,23 +66,23 @@ export default function TagsPage() {
             <Link
               key={tag}
               href={`/tags/${encodeURIComponent(tag)}`}
-              className="card p-6 hover:shadow-md transition-all duration-200 group"
+              className="card no-link-underline p-4 transition-all duration-200 group hover:border-neutral-400 hover:bg-neutral-50 dark:hover:border-neutral-600 dark:hover:bg-neutral-800"
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
-                    <Hash className="h-5 w-5 text-primary" />
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-1.5 bg-neutral-100 rounded group-hover:bg-neutral-200 transition-colors dark:bg-neutral-800 dark:group-hover:bg-neutral-700">
+                    <Hash className="h-4 w-4 text-neutral-600 transition-colors group-hover:text-neutral-900 dark:text-neutral-400 dark:group-hover:text-neutral-100" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-base group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition-colors">
                       {tag}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {count} 篇文章
                     </p>
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-muted-foreground/50">
+                <div className="text-xl font-bold text-muted-foreground/50 transition-colors group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
                   {count}
                 </div>
               </div>

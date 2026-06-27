@@ -2,6 +2,7 @@ export interface Post {
   slug: string;
   title: string;
   date: string;
+  category?: string;
   description?: string;
   content: string;
   tags: string[];
@@ -15,6 +16,7 @@ export interface PostMeta {
   slug: string;
   title: string;
   date: string;
+  category?: string;
   description?: string;
   tags: string[];
   cover?: string;
@@ -27,6 +29,7 @@ export interface PostFrontmatter {
   slug?: string;
   title: string;
   date: string;
+  category?: string;
   description?: string;
   tags?: string[];
   cover?: string;

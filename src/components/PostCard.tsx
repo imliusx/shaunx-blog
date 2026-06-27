@@ -48,8 +48,16 @@ export function PostCard({ post }: PostCardProps) {
               </div>
             )}
             
-            {post.tags.length > 0 && (
-              <div className="h-7 overflow-hidden">
+            {(post.category || post.tags.length > 0) && (
+              <div className="flex h-7 items-start gap-2 overflow-hidden">
+                {post.category && (
+                  <Link
+                    href={`/categories/${encodeSlug(post.category)}` as any}
+                    className="no-link-underline inline-flex shrink-0 items-center bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+                  >
+                    ./{post.category}
+                  </Link>
+                )}
                 <TagList tags={post.tags} />
               </div>
             )}

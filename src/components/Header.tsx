@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './ThemeToggle';
 import { useConfig } from '@/hooks/useConfig';
 import { cn } from '@/lib/utils';
-import { CircleUserRound, Code2, FileCode2, Hash, Menu, Terminal, X, type LucideIcon } from 'lucide-react';
+import { CircleUserRound, Code2, FileCode2, Folder, Hash, Menu, Terminal, X, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 
 function getNavIcon(href: string): LucideIcon {
@@ -14,6 +14,8 @@ function getNavIcon(href: string): LucideIcon {
       return Terminal;
     case '/posts':
       return FileCode2;
+    case '/categories':
+      return Folder;
     case '/tags':
       return Hash;
     case '/about':
@@ -70,7 +72,7 @@ export function Header() {
               </div>
               
               <nav className="hidden md:flex items-center space-x-8">
-                {Array.from({ length: 4 }).map((_, i) => (
+                {Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="h-4 w-16 shimmer rounded"></div>
                 ))}
                 <ThemeToggle />
@@ -94,22 +96,25 @@ export function Header() {
         <div className="content-wrapper">
           <div className="flex h-[72px] items-center justify-between fade-in">
             <div className="flex items-center space-x-2">
-              <Link href="/" className="text-xl font-medium text-neutral-900 dark:text-neutral-100 transition-smooth">
+              <Link href="/" className="pb-1 text-xl font-medium text-neutral-900 transition-smooth [background-position:left_calc(100%+4px)] dark:text-neutral-100">
                 {config.title}
               </Link>
             </div>
             
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
               {config.nav.map((item, index) => {
                 const Icon = getNavIcon(item.href);
+                const isActive = item.href === '/'
+                  ? pathname === item.href
+                  : pathname.startsWith(item.href);
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href as any}
                     className={cn(
-                      "inline-flex items-center gap-1.5 text-sm font-medium transition-smooth",
-                      pathname === item.href
+                      "inline-flex items-center gap-1.5 pb-1 text-sm font-medium transition-smooth [background-position:left_calc(100%+4px)]",
+                      isActive
                         ? "text-neutral-900 dark:text-neutral-100"
                         : "text-neutral-600 dark:text-neutral-400"
                     )}
@@ -163,6 +168,9 @@ export function Header() {
             <div className="flex flex-col py-4">
               {config.nav.map((item, index) => {
                 const Icon = getNavIcon(item.href);
+                const isActive = item.href === '/'
+                  ? pathname === item.href
+                  : pathname.startsWith(item.href);
 
                 return (
                   <Link
@@ -173,7 +181,7 @@ export function Header() {
                       isClosing 
                         ? "animate-fade-out" 
                         : "animate-fade-in",
-                      pathname === item.href
+                      isActive
                         ? "text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-800"
                         : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800"
                     )}

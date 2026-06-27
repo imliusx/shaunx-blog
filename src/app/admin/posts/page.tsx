@@ -11,6 +11,7 @@ interface AdminPost {
   slug: string;
   title: string;
   date: string;
+  category?: string;
   published: boolean;
   tags: string[];
   description?: string;
@@ -262,6 +263,12 @@ export default function AdminPosts() {
                           <Hash className="h-3.5 w-3.5" />
                           {post.slug}
                         </span>
+                        {post.category && (
+                          <span className="inline-flex items-center gap-1">
+                            <span aria-hidden="true">./</span>
+                            {post.category}
+                          </span>
+                        )}
                         {post.tags.length > 0 && (
                           <span className="inline-flex items-center gap-1">
                             <Tags className="h-3.5 w-3.5" />

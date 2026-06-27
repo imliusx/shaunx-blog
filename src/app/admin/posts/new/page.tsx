@@ -8,6 +8,7 @@ import { PostForm } from '@/components/PostForm';
 interface PostFormData {
   title: string;
   slug: string;
+  category: string;
   content: string;
   date: string;
   tags: string[];

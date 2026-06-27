@@ -9,6 +9,7 @@ import { decodeSlug, encodeSlug } from '@/lib/slug';
 interface PostFormData {
   title: string;
   slug: string;
+  category: string;
   content: string;
   date: string;
   tags: string[];
@@ -40,6 +41,7 @@ export default function EditPost({ params }: { params: { slug: string } }) {
           setPostData({
             title: post.title,
             slug: post.slug,
+            category: post.category || '',
             content: post.content,
             date: post.date,
             tags: post.tags || [],

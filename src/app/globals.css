@@ -70,6 +70,14 @@
     @apply max-w-4xl mx-auto px-6 sm:px-8 lg:px-12;
   }
 
+  .no-link-underline,
+  .no-link-underline:hover,
+  .dark .no-link-underline,
+  .dark .no-link-underline:hover {
+    background-image: none !important;
+    background-size: 0 1px !important;
+  }
+
   /* 按钮样式 */
   .btn {
     @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;

@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { MarkdownEditor } from './MarkdownEditor';
+import { POST_CATEGORIES } from '@/lib/categories';
 
 interface PostFormData {
   title: string;
   slug: string;
+  category: string;
   content: string;
   date: string;
   tags: string[];
@@ -32,6 +34,7 @@ export function PostForm({
   const [formData, setFormData] = useState<PostFormData>({
     title: initialData.title || '',
     slug: initialData.slug || '',
+    category: initialData.category || '',
     content: initialData.content || '',
     date: initialData.date || new Date().toISOString().split('T')[0],
     tags: initialData.tags || [],
@@ -163,6 +166,25 @@ export function PostForm({
               )}
             </div>
             
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                文章类别
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 font-mono text-sm focus:ring-2 focus:ring-neutral-500 focus:border-transparent"
+                disabled={isLoading}
+              >
+                <option value="">未分类</option>
+                {POST_CATEGORIES.map(category => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 发布日期

@@ -16,6 +16,7 @@ const handleGetPosts = withAdminAuth(async (request: NextRequest) => {
       slug: info.publicSlug,
       title: info.frontmatter.title,
       date: info.frontmatter.date,
+      category: info.frontmatter.category,
       published: info.frontmatter.published ?? true,
       tags: info.frontmatter.tags || [],
       description: info.frontmatter.description,
@@ -55,7 +56,7 @@ const handleGetPosts = withAdminAuth(async (request: NextRequest) => {
 const handleCreatePost = withAdminAuth(async (request: NextRequest) => {
   try {
     const body = await request.json();
-    const { slug, title, content, date, tags = [], description, cover, published = true } = body;
+    const { slug, title, content, date, category, tags = [], description, cover, published = true } = body;
     const publicSlug = typeof slug === 'string' ? slug.trim() : '';
 
     if (!publicSlug || !title || !content) {
@@ -86,6 +87,7 @@ const handleCreatePost = withAdminAuth(async (request: NextRequest) => {
       slug: publicSlug,
       title,
       date: date || new Date().toISOString().split('T')[0],
+      ...(category && { category }),
       ...(tags.length > 0 && { tags }),
       ...(description && { description }),
       ...(cover && { cover }),

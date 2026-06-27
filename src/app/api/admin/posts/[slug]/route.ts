@@ -23,6 +23,7 @@ const handleGetPost = withAdminAuth(async (request: NextRequest, { params }: { p
       slug: postInfo.publicSlug,
       title: postInfo.frontmatter.title,
       date: postInfo.frontmatter.date,
+      category: postInfo.frontmatter.category,
       published: postInfo.frontmatter.published ?? true,
       tags: postInfo.frontmatter.tags || [],
       description: postInfo.frontmatter.description,
@@ -51,7 +52,7 @@ const handleUpdatePost = withAdminAuth(async (request: NextRequest, { params }: 
   try {
     const slug = decodeSlug(params.slug);
     const body = await request.json();
-    const { title, content, date, tags = [], description, cover, published = true, newSlug } = body;
+    const { title, content, date, category, tags = [], description, cover, published = true, newSlug } = body;
 
     const postInfo = getPostFileInfoBySlug(slug, { includeDrafts: true });
     const nextSlug = typeof newSlug === 'string' && newSlug.trim() ? newSlug.trim() : slug;
@@ -88,6 +89,7 @@ const handleUpdatePost = withAdminAuth(async (request: NextRequest, { params }: 
       slug: nextSlug,
       title,
       date: date || new Date().toISOString().split('T')[0],
+      ...(category && { category }),
       ...(tags.length > 0 && { tags }),
       ...(description && { description }),
       ...(cover && { cover }),

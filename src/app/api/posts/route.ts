@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       const searchLower = search.toLowerCase();
       posts = posts.filter(post => 
         post.title.toLowerCase().includes(searchLower) ||
+        post.category?.toLowerCase().includes(searchLower) ||
         post.description?.toLowerCase().includes(searchLower) ||
         post.excerpt?.toLowerCase().includes(searchLower) ||
         post.tags.some(tag => tag.toLowerCase().includes(searchLower))

@@ -114,6 +114,7 @@ export default function AdminSettings() {
         nav: [
           { name: 'Home', href: '/' },
           { name: 'Posts', href: '/posts' },
+          { name: 'Categories', href: '/categories' },
           { name: 'Tags', href: '/tags' },
           { name: 'About', href: '/about' }
         ],

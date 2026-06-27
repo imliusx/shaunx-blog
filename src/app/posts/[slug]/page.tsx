@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, Folder } from 'lucide-react';
 import { usePost } from '@/hooks/usePost';
 import { useTableOfContents } from '@/hooks/useTableOfContents';
 import { formatDate } from '@/lib/utils';
@@ -13,6 +13,7 @@ import { TableOfContents } from '@/components/TableOfContents';
 import { useParams } from 'next/navigation';
 import { LoadingTransition } from '@/components/LoadingComponents';
 import { CodeBlock } from '@/components/CodeBlock';
+import { encodeSlug } from '@/lib/slug';
 
 export default function PostPage() {
   const params = useParams();
@@ -152,6 +153,16 @@ export default function PostPage() {
                   <Clock className="h-4 w-4" />
                   <span>{post.readingTime}分钟阅读</span>
                 </div>
+              )}
+
+              {post?.category && (
+                <Link
+                  href={`/categories/${encodeSlug(post.category)}` as any}
+                  className="no-link-underline inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                >
+                  <Folder className="h-4 w-4" />
+                  <span>./{post.category}</span>
+                </Link>
               )}
             </div>
             
