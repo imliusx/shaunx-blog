@@ -33,8 +33,8 @@ RUN corepack enable pnpm && pnpm build
 FROM base AS runner
 WORKDIR /app
 
-# 安装必要工具：bash 和 su-exec（Alpine 原生的 gosu 替代品）
-RUN apk add --no-cache bash su-exec
+# 安装必要工具：bash、curl 和 su-exec（Alpine 原生的 gosu 替代品）
+RUN apk add --no-cache bash curl su-exec
 
 # 传递用户权限参数
 ARG USER_ID=1001
