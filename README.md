@@ -77,6 +77,21 @@ bash <(curl -sSL https://raw.githubusercontent.com/imliusx/shaunx-blog/master/sc
 > - [用户使用指南 (中文)](docs/用户使用指南.md)
 > - [User Guide (English)](docs/USER_GUIDE.md)
 
+### 本地写文章后发布
+
+如果本地修改了 `content/` 并推送到 GitHub，在服务器执行：
+
+```bash
+cd /opt/shaunx-blog
+scripts/deploy-content.sh
+```
+
+预览同步内容：
+
+```bash
+scripts/deploy-content.sh --dry-run
+```
+
 ### 手动 Docker 部署
 
 ```bash
