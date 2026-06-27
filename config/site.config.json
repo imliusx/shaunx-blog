@@ -1,17 +1,18 @@
 {
   "title": "Shaunx Dev",
-  "description": "Hello, I broke it. No, I didn't mean to. Yes, I learned something.",
+  "description": "Hello, I'm Shaun.
+I build things, break things, and learn from both.",
   "introduction": "\"Do not go gentle into that good night. Old age should burn and rave at close of day. Rage, rage against the dying of the light.\"",
   "author": {
     "name": "shaunx",
-    "email": "blog@example.com",
+    "email": "liusx.dev@gmail.com",
     "github": "github-username"
   },
-  "url": "https://your-blog.com",
+  "url": "https://blog.liusx.dev",
   "social": {
-    "github": "https://github.com/Tiny-Blog",
+    "github": "https://github.com/",
     "twitter": "https://twitter.com/username",
-    "email": "someone@gmail.com"
+    "email": "liusx.dev@gmail.com"
   },
   "theme": {
     "primaryColor": "#262626"
