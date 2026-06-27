@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPostBySlug, markdownToHtml } from '@/lib/posts';
+import { decodeSlug } from '@/lib/slug';
 
 interface RouteContext {
   params: { slug: string };
@@ -7,7 +8,7 @@ interface RouteContext {
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
   try {
-    const { slug } = params;
+    const slug = decodeSlug(params.slug);
     const { searchParams } = new URL(request.url);
     const includeContent = searchParams.get('includeContent') !== 'false';
 

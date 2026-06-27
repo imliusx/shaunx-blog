@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Calendar, Clock } from 'lucide-react';
 import type { PostMeta } from '@/types';
 import { formatDate } from '@/lib/utils';
+import { encodeSlug } from '@/lib/slug';
 import { TagList } from './TagList';
 
 interface PostCardProps {
@@ -10,6 +11,8 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const postHref = `/posts/${encodeSlug(post.slug)}` as any;
+
   return (
     <article className="card transition-all duration-200 hover:shadow-md overflow-hidden md:h-48">
       <div className="flex h-full flex-col md:flex-row">
@@ -30,7 +33,7 @@ export function PostCard({ post }: PostCardProps) {
           <div className="min-w-0 flex-1 overflow-hidden">
             <h3 className="text-xl font-semibold mb-2 line-clamp-2 leading-snug">
               <Link 
-                href={`/posts/${post.slug}`}
+                href={postHref}
                 className="text-neutral-900 dark:text-neutral-100"
               >
                 {post.title}
@@ -72,7 +75,7 @@ export function PostCard({ post }: PostCardProps) {
                 )}
                 
                 <Link 
-                  href={`/posts/${post.slug}`}
+                  href={postHref}
                   className="col-start-2 row-start-2 justify-self-end whitespace-nowrap text-right font-medium text-neutral-600 dark:text-neutral-400"
                 >
                   阅读更多 -&gt;
@@ -97,7 +100,7 @@ export function PostCard({ post }: PostCardProps) {
                 </div>
                 
                 <Link 
-                  href={`/posts/${post.slug}`}
+                  href={postHref}
                   className="whitespace-nowrap text-right font-medium text-neutral-600 dark:text-neutral-400"
                 >
                   阅读更多 -&gt;

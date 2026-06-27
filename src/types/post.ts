@@ -24,6 +24,7 @@ export interface PostMeta {
 }
 
 export interface PostFrontmatter {
+  slug?: string;
   title: string;
   date: string;
   description?: string;

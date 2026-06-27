@@ -5,6 +5,7 @@ import { TagFilter } from '@/components/TagFilter';
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { Calendar, Hash, Tags } from 'lucide-react';
+import { encodeSlug } from '@/lib/slug';
 
 interface AdminPost {
   slug: string;
@@ -59,7 +60,7 @@ export default function AdminPosts() {
     }
 
     try {
-      const response = await fetch(`/api/admin/posts/${slug}`, {
+      const response = await fetch(`/api/admin/posts/${encodeSlug(slug)}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -94,7 +95,7 @@ export default function AdminPosts() {
 
     try {
       const deletePromises = selectedPosts.map(slug =>
-        fetch(`/api/admin/posts/${slug}`, {
+        fetch(`/api/admin/posts/${encodeSlug(slug)}`, {
           method: 'DELETE',
           credentials: 'include',
         })
@@ -279,7 +280,7 @@ export default function AdminPosts() {
                   
                   <div className="flex items-center space-x-2 ml-4">
                     <a
-                      href={`/posts/${post.slug}`}
+                      href={`/posts/${encodeSlug(post.slug)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 text-sm"
@@ -287,7 +288,7 @@ export default function AdminPosts() {
                       View
                     </a>
                     <Link
-                      href={`/admin/posts/${post.slug}/edit`}
+                      href={`/admin/posts/${encodeSlug(post.slug)}/edit`}
                       className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 text-sm"
                     >
                       Edit

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withAdminAuth } from '@/lib/middleware';
-import { getAllPosts } from '@/lib/posts';
+import { getAllPostFileInfos, getPostFileInfoBySlug } from '@/lib/posts';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -12,40 +12,18 @@ const handleGetPosts = withAdminAuth(async (request: NextRequest) => {
     const includeContent = searchParams.get('includeContent') === 'true';
     const filterTag = searchParams.get('tag');
 
-    // 获取posts目录
-    const postsDirectory = path.join(process.cwd(), 'content/posts');
-    
-    if (!fs.existsSync(postsDirectory)) {
-      return NextResponse.json({
-        success: true,
-        data: []
-      });
-    }
-
-    const fileNames = fs.readdirSync(postsDirectory);
-    let posts = fileNames
-      .filter(fileName => fileName.endsWith('.md'))
-      .map(fileName => {
-        const slug = fileName.replace(/\.md$/, '');
-        const fullPath = path.join(postsDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-        const { data, content } = matter(fileContents);
-        
-        const stats = fs.statSync(fullPath);
-        
-        return {
-          slug,
-          title: data.title,
-          date: data.date,
-          published: data.published ?? true,
-          tags: data.tags || [],
-          description: data.description,
-          cover: data.cover,
-          content: includeContent ? content : undefined,
-          createdAt: stats.birthtime.toISOString(),
-          updatedAt: stats.mtime.toISOString(),
-        };
-      });
+    let posts = getAllPostFileInfos({ includeDrafts: true }).map(info => ({
+      slug: info.publicSlug,
+      title: info.frontmatter.title,
+      date: info.frontmatter.date,
+      published: info.frontmatter.published ?? true,
+      tags: info.frontmatter.tags || [],
+      description: info.frontmatter.description,
+      cover: info.frontmatter.cover,
+      content: includeContent ? info.content : undefined,
+      createdAt: info.stats.birthtime.toISOString(),
+      updatedAt: info.stats.mtime.toISOString(),
+    }));
 
     // 按标签筛选
     if (filterTag && filterTag.trim() !== '') {
@@ -78,8 +56,9 @@ const handleCreatePost = withAdminAuth(async (request: NextRequest) => {
   try {
     const body = await request.json();
     const { slug, title, content, date, tags = [], description, cover, published = true } = body;
+    const publicSlug = typeof slug === 'string' ? slug.trim() : '';
 
-    if (!slug || !title || !content) {
+    if (!publicSlug || !title || !content) {
       return NextResponse.json(
         { success: false, error: 'slug, title, content 是必填字段' },
         { status: 400 }
@@ -88,9 +67,9 @@ const handleCreatePost = withAdminAuth(async (request: NextRequest) => {
 
     // 检查slug是否已存在
     const postsDirectory = path.join(process.cwd(), 'content/posts');
-    const filePath = path.join(postsDirectory, `${slug}.md`);
+    const filePath = path.join(postsDirectory, `${publicSlug}.md`);
     
-    if (fs.existsSync(filePath)) {
+    if (fs.existsSync(filePath) || getPostFileInfoBySlug(publicSlug, { includeDrafts: true })) {
       return NextResponse.json(
         { success: false, error: '该文章slug已存在' },
         { status: 409 }
@@ -104,6 +83,7 @@ const handleCreatePost = withAdminAuth(async (request: NextRequest) => {
 
     // 构建frontmatter
     const frontmatter = {
+      slug: publicSlug,
       title,
       date: date || new Date().toISOString().split('T')[0],
       ...(tags.length > 0 && { tags }),
@@ -121,7 +101,7 @@ const handleCreatePost = withAdminAuth(async (request: NextRequest) => {
     return NextResponse.json({
       success: true,
       message: '文章创建成功',
-      data: { slug }
+      data: { slug: publicSlug }
     });
 
   } catch (error) {

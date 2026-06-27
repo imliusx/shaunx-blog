@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Post } from '@/types';
+import { encodeSlug } from '@/lib/slug';
 
 interface PostState {
   post: Post | null;
@@ -26,7 +27,7 @@ export function usePost(slug: string, includeContent: boolean = true) {
       const params = new URLSearchParams();
       if (!includeContent) params.set('includeContent', 'false');
 
-      const response = await fetch(`/api/posts/${encodeURIComponent(slug)}?${params}`, {
+      const response = await fetch(`/api/posts/${encodeSlug(slug)}?${params}`, {
         cache: 'no-cache'
       });
       

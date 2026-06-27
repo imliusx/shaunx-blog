@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProtectedAdminPage } from '@/components/ProtectedAdminPage';
 import { PostForm } from '@/components/PostForm';
-import { getPostBySlug } from '@/lib/posts';
+import { decodeSlug, encodeSlug } from '@/lib/slug';
 
 interface PostFormData {
   title: string;
@@ -23,13 +23,14 @@ export default function EditPost({ params }: { params: { slug: string } }) {
   const [isLoadingPost, setIsLoadingPost] = useState(true);
   const [postData, setPostData] = useState<PostFormData | null>(null);
   const [error, setError] = useState<string>('');
+  const slug = decodeSlug(params.slug);
 
   // 加载文章数据
   useEffect(() => {
     const loadPost = async () => {
       try {
         setIsLoadingPost(true);
-        const response = await fetch(`/api/admin/posts/${params.slug}`, {
+        const response = await fetch(`/api/admin/posts/${encodeSlug(slug)}`, {
           credentials: 'include',
         });
         const result = await response.json();
@@ -58,13 +59,13 @@ export default function EditPost({ params }: { params: { slug: string } }) {
     };
 
     loadPost();
-  }, [params.slug]);
+  }, [slug]);
 
   const handleSubmit = async (formData: PostFormData) => {
     try {
       setIsLoading(true);
       
-      const response = await fetch(`/api/admin/posts/${params.slug}`, {
+      const response = await fetch(`/api/admin/posts/${encodeSlug(slug)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ export default function EditPost({ params }: { params: { slug: string } }) {
         credentials: 'include',
         body: JSON.stringify({
           ...formData,
-          newSlug: formData.slug !== params.slug ? formData.slug : undefined,
+          newSlug: formData.slug !== slug ? formData.slug : undefined,
         }),
       });
 
@@ -80,8 +81,8 @@ export default function EditPost({ params }: { params: { slug: string } }) {
 
       if (result.success) {
         // 如果修改了slug，跳转到新的编辑页面
-        if (result.data.slug !== params.slug) {
-          router.push(`/admin/posts/${result.data.slug}/edit`);
+        if (result.data.slug !== slug) {
+          router.push(`/admin/posts/${encodeSlug(result.data.slug)}/edit`);
         } else {
           router.push('/admin/posts');
         }
@@ -151,7 +152,7 @@ export default function EditPost({ params }: { params: { slug: string } }) {
     <ProtectedAdminPage>
       <div className="mb-6">
         <div className="text-2xl font-medium text-neutral-900 dark:text-neutral-100 mb-2">
-          {'>'} Edit Post: {params.slug}
+          {'>'} Edit Post: {slug}
         </div>
         <div className="text-neutral-600 dark:text-neutral-400 text-sm">
           ──────────────────────────────────────────────

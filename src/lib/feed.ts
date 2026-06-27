@@ -1,5 +1,6 @@
 import { Feed } from 'feed';
 import { getAllPosts, getPostBySlug, markdownToHtml } from './posts';
+import { encodeSlug } from './slug';
 import { PostMeta } from '@/types';
 import fs from 'fs';
 import path from 'path';
@@ -120,10 +121,12 @@ class FeedService {
       .forEach(post => {
         if (!post) return;
 
+        const postUrl = `${config.url}/posts/${encodeSlug(post.slug)}`;
+
         feed.addItem({
           title: post.title,
-          id: `${config.url}/posts/${post.slug}`,
-          link: `${config.url}/posts/${post.slug}`,
+          id: postUrl,
+          link: postUrl,
           description: post.excerpt,
           content: post.content || post.excerpt,
           author: [

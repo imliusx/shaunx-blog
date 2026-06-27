@@ -9,71 +9,150 @@ import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
 import { Post, PostMeta, PostFrontmatter } from '@/types';
 import { calculateReadingTime, generateExcerpt } from './utils';
+import { decodeSlug } from './slug';
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
-export function getAllPostSlugs(): string[] {
+export interface PostFileInfo {
+  fileName: string;
+  fileSlug: string;
+  fullPath: string;
+  publicSlug: string;
+  frontmatter: PostFrontmatter;
+  content: string;
+  stats: fs.Stats;
+}
+
+function getMarkdownFileNames(): string[] {
   if (!fs.existsSync(postsDirectory)) {
     return [];
   }
-  
-  const fileNames = fs.readdirSync(postsDirectory);
-  return fileNames
+
+  return fs.readdirSync(postsDirectory)
     .filter(fileName => fileName.endsWith('.md'))
-    .map(fileName => fileName.replace(/\.md$/, ''));
+    .sort((a, b) => a.localeCompare(b));
 }
 
-export function getPostBySlug(slug: string): Post | null {
-  try {
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
-    
-    if (!fs.existsSync(fullPath)) {
-      return null;
-    }
+function getFileSlug(fileName: string): string {
+  return fileName.replace(/\.md$/, '');
+}
 
+function getPublicSlug(frontmatter: PostFrontmatter, fileSlug: string): string {
+  const frontmatterSlug = typeof frontmatter.slug === 'string' ? frontmatter.slug.trim() : '';
+  return frontmatterSlug || fileSlug;
+}
+
+function readPostFile(fileName: string): PostFileInfo | null {
+  try {
+    const fileSlug = getFileSlug(fileName);
+    const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
-    
     const frontmatter = data as PostFrontmatter;
-    
-    // 如果文章未发布，返回 null
-    if (frontmatter.published === false) {
-      return null;
-    }
-
-    const readingTime = calculateReadingTime(content);
-    const excerpt = frontmatter.description || generateExcerpt(content);
+    const stats = fs.statSync(fullPath);
 
     return {
-      slug,
-      title: frontmatter.title,
-      date: frontmatter.date,
-      description: frontmatter.description,
+      fileName,
+      fileSlug,
+      fullPath,
+      publicSlug: getPublicSlug(frontmatter, fileSlug),
+      frontmatter,
       content,
-      tags: frontmatter.tags || [],
-      cover: frontmatter.cover,
-      excerpt,
-      readingTime,
-      published: frontmatter.published ?? true,
+      stats,
     };
   } catch (error) {
-    console.error(`Error reading post ${slug}:`, error);
+    console.error(`Error reading post file ${fileName}:`, error);
     return null;
   }
 }
 
+function resolveDuplicateSlugs(infos: PostFileInfo[]): PostFileInfo[] {
+  const seen = new Set<string>();
+
+  return infos.map(info => {
+    if (!seen.has(info.publicSlug)) {
+      seen.add(info.publicSlug);
+      return info;
+    }
+
+    const fallbackInfo = {
+      ...info,
+      publicSlug: info.fileSlug,
+    };
+
+    if (seen.has(fallbackInfo.publicSlug)) {
+      console.warn(
+        `Duplicate post slug "${info.publicSlug}" in ${info.fileName}; keeping duplicate slug`
+      );
+      return info;
+    }
+
+    console.warn(
+      `Duplicate post slug "${info.publicSlug}" in ${info.fileName}; using file slug "${info.fileSlug}"`
+    );
+    seen.add(fallbackInfo.publicSlug);
+    return fallbackInfo;
+  });
+}
+
+export function getAllPostFileInfos(options: { includeDrafts?: boolean } = {}): PostFileInfo[] {
+  const infos = getMarkdownFileNames()
+    .map(readPostFile)
+    .filter((info): info is PostFileInfo => info !== null)
+    .filter(info => options.includeDrafts || info.frontmatter.published !== false);
+
+  return resolveDuplicateSlugs(infos);
+}
+
+export function getPostFileInfoBySlug(
+  slug: string,
+  options: { includeDrafts?: boolean } = {}
+): PostFileInfo | null {
+  const decodedSlug = decodeSlug(slug);
+  const infos = getAllPostFileInfos(options);
+
+  return (
+    infos.find(info => info.publicSlug === decodedSlug) ??
+    infos.find(info => info.fileSlug === decodedSlug) ??
+    null
+  );
+}
+
+function postFromFileInfo(info: PostFileInfo): Post {
+  const readingTime = calculateReadingTime(info.content);
+  const excerpt = info.frontmatter.description || generateExcerpt(info.content);
+
+  return {
+    slug: info.publicSlug,
+    title: info.frontmatter.title,
+    date: info.frontmatter.date,
+    description: info.frontmatter.description,
+    content: info.content,
+    tags: info.frontmatter.tags || [],
+    cover: info.frontmatter.cover,
+    excerpt,
+    readingTime,
+    published: info.frontmatter.published ?? true,
+  };
+}
+
+export function getAllPostSlugs(): string[] {
+  return getAllPostFileInfos().map(info => info.publicSlug);
+}
+
+export function getPostBySlug(slug: string): Post | null {
+  const info = getPostFileInfoBySlug(slug);
+  return info ? postFromFileInfo(info) : null;
+}
+
 export function getAllPosts(): PostMeta[] {
-  const slugs = getAllPostSlugs();
-  const posts = slugs
-    .map(slug => {
-      const post = getPostBySlug(slug);
-      if (!post) return null;
-      
+  const posts = getAllPostFileInfos()
+    .map(info => {
+      const post = postFromFileInfo(info);
       // 只返回元数据，不包含内容
       const { content, ...meta } = post;
       return meta;
     })
-    .filter((post): post is PostMeta => post !== null)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return posts;

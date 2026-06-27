@@ -3,37 +3,33 @@ import { withAdminAuth } from '@/lib/middleware';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { decodeSlug } from '@/lib/slug';
+import { getPostFileInfoBySlug } from '@/lib/posts';
 
 // 获取单篇文章（管理员视图，包括草稿）
 const handleGetPost = withAdminAuth(async (request: NextRequest, { params }: { params: { slug: string } }) => {
   try {
-    const { slug } = params;
-    const postsDirectory = path.join(process.cwd(), 'content/posts');
-    const filePath = path.join(postsDirectory, `${slug}.md`);
+    const slug = decodeSlug(params.slug);
+    const postInfo = getPostFileInfoBySlug(slug, { includeDrafts: true });
 
-    if (!fs.existsSync(filePath)) {
+    if (!postInfo) {
       return NextResponse.json(
         { success: false, error: '文章不存在' },
         { status: 404 }
       );
     }
-
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const { data, content } = matter(fileContents);
-    
-    const stats = fs.statSync(filePath);
     
     const post = {
-      slug,
-      title: data.title,
-      date: data.date,
-      published: data.published ?? true,
-      tags: data.tags || [],
-      description: data.description,
-      cover: data.cover,
-      content,
-      createdAt: stats.birthtime.toISOString(),
-      updatedAt: stats.mtime.toISOString(),
+      slug: postInfo.publicSlug,
+      title: postInfo.frontmatter.title,
+      date: postInfo.frontmatter.date,
+      published: postInfo.frontmatter.published ?? true,
+      tags: postInfo.frontmatter.tags || [],
+      description: postInfo.frontmatter.description,
+      cover: postInfo.frontmatter.cover,
+      content: postInfo.content,
+      createdAt: postInfo.stats.birthtime.toISOString(),
+      updatedAt: postInfo.stats.mtime.toISOString(),
     };
 
     return NextResponse.json({
@@ -53,14 +49,14 @@ const handleGetPost = withAdminAuth(async (request: NextRequest, { params }: { p
 // 更新文章
 const handleUpdatePost = withAdminAuth(async (request: NextRequest, { params }: { params: { slug: string } }) => {
   try {
-    const { slug } = params;
+    const slug = decodeSlug(params.slug);
     const body = await request.json();
     const { title, content, date, tags = [], description, cover, published = true, newSlug } = body;
 
-    const postsDirectory = path.join(process.cwd(), 'content/posts');
-    const currentFilePath = path.join(postsDirectory, `${slug}.md`);
+    const postInfo = getPostFileInfoBySlug(slug, { includeDrafts: true });
+    const nextSlug = typeof newSlug === 'string' && newSlug.trim() ? newSlug.trim() : slug;
 
-    if (!fs.existsSync(currentFilePath)) {
+    if (!postInfo) {
       return NextResponse.json(
         { success: false, error: '文章不存在' },
         { status: 404 }
@@ -68,9 +64,18 @@ const handleUpdatePost = withAdminAuth(async (request: NextRequest, { params }: 
     }
 
     // 如果要修改slug
-    if (newSlug && newSlug !== slug) {
-      const newFilePath = path.join(postsDirectory, `${newSlug}.md`);
-      if (fs.existsSync(newFilePath)) {
+    if (nextSlug !== slug) {
+      const existingPost = getPostFileInfoBySlug(nextSlug, { includeDrafts: true });
+      if (existingPost && existingPost.fullPath !== postInfo.fullPath) {
+        return NextResponse.json(
+          { success: false, error: '新的slug已存在' },
+          { status: 409 }
+        );
+      }
+
+      const postsDirectory = path.dirname(postInfo.fullPath);
+      const newFilePath = path.join(postsDirectory, `${nextSlug}.md`);
+      if (fs.existsSync(newFilePath) && newFilePath !== postInfo.fullPath) {
         return NextResponse.json(
           { success: false, error: '新的slug已存在' },
           { status: 409 }
@@ -80,6 +85,7 @@ const handleUpdatePost = withAdminAuth(async (request: NextRequest, { params }: 
 
     // 构建frontmatter
     const frontmatter = {
+      slug: nextSlug,
       title,
       date: date || new Date().toISOString().split('T')[0],
       ...(tags.length > 0 && { tags }),
@@ -92,18 +98,19 @@ const handleUpdatePost = withAdminAuth(async (request: NextRequest, { params }: 
     const fileContent = matter.stringify(content, frontmatter);
 
     // 如果修改了slug，先删除旧文件
-    if (newSlug && newSlug !== slug) {
-      const newFilePath = path.join(postsDirectory, `${newSlug}.md`);
+    if (nextSlug !== slug) {
+      const postsDirectory = path.dirname(postInfo.fullPath);
+      const newFilePath = path.join(postsDirectory, `${nextSlug}.md`);
       fs.writeFileSync(newFilePath, fileContent, 'utf8');
-      fs.unlinkSync(currentFilePath);
+      fs.unlinkSync(postInfo.fullPath);
     } else {
-      fs.writeFileSync(currentFilePath, fileContent, 'utf8');
+      fs.writeFileSync(postInfo.fullPath, fileContent, 'utf8');
     }
 
     return NextResponse.json({
       success: true,
       message: '文章更新成功',
-      data: { slug: newSlug || slug }
+      data: { slug: nextSlug }
     });
 
   } catch (error) {
@@ -118,18 +125,17 @@ const handleUpdatePost = withAdminAuth(async (request: NextRequest, { params }: 
 // 删除文章
 const handleDeletePost = withAdminAuth(async (request: NextRequest, { params }: { params: { slug: string } }) => {
   try {
-    const { slug } = params;
-    const postsDirectory = path.join(process.cwd(), 'content/posts');
-    const filePath = path.join(postsDirectory, `${slug}.md`);
+    const slug = decodeSlug(params.slug);
+    const postInfo = getPostFileInfoBySlug(slug, { includeDrafts: true });
 
-    if (!fs.existsSync(filePath)) {
+    if (!postInfo) {
       return NextResponse.json(
         { success: false, error: '文章不存在' },
         { status: 404 }
       );
     }
 
-    fs.unlinkSync(filePath);
+    fs.unlinkSync(postInfo.fullPath);
 
     return NextResponse.json({
       success: true,
