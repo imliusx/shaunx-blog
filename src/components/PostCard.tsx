@@ -5,6 +5,7 @@ import type { PostMeta } from '@/types';
 import { formatDate } from '@/lib/utils';
 import { encodeSlug } from '@/lib/slug';
 import { TagList } from './TagList';
+import { CategoryIcon } from './CategoryIcon';
 
 interface PostCardProps {
   post: PostMeta;
@@ -48,16 +49,8 @@ export function PostCard({ post }: PostCardProps) {
               </div>
             )}
             
-            {(post.category || post.tags.length > 0) && (
+            {post.tags.length > 0 && (
               <div className="flex h-7 items-start gap-2 overflow-hidden">
-                {post.category && (
-                  <Link
-                    href={`/categories/${encodeSlug(post.category)}` as any}
-                    className="no-link-underline inline-flex shrink-0 items-center bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
-                  >
-                    ./{post.category}
-                  </Link>
-                )}
                 <TagList tags={post.tags} />
               </div>
             )}
@@ -68,11 +61,24 @@ export function PostCard({ post }: PostCardProps) {
             <div className="my-3 h-px bg-[repeating-linear-gradient(to_right,currentColor_0,currentColor_8px,transparent_8px,transparent_14px)] text-neutral-300 dark:text-neutral-700" />
             <div className="text-sm leading-5 text-neutral-500 dark:text-neutral-500">
               <div className="grid grid-cols-[minmax(0,1fr),auto] gap-x-3 gap-y-2 sm:hidden">
-                <div className="inline-flex items-center gap-1 whitespace-nowrap">
-                  <Calendar className="h-4 w-4" />
-                  <time dateTime={post.date}>
-                    {formatDate(post.date)}
-                  </time>
+                <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+                  <div className="inline-flex items-center gap-1 whitespace-nowrap">
+                    <Calendar className="h-4 w-4" />
+                    <time dateTime={post.date}>
+                      {formatDate(post.date)}
+                    </time>
+                  </div>
+
+                  {post.category && (
+                    <Link
+                      href={`/categories/${encodeSlug(post.category)}` as any}
+                      className="no-link-underline inline-flex items-center gap-1 whitespace-nowrap text-inherit hover:text-inherit"
+                      style={{ color: 'inherit' }}
+                    >
+                      <CategoryIcon category={post.category} className="h-4 w-4" />
+                      <span>./{post.category}</span>
+                    </Link>
+                  )}
                 </div>
                 
                 {post.readingTime && (
@@ -98,6 +104,17 @@ export function PostCard({ post }: PostCardProps) {
                       {formatDate(post.date)}
                     </time>
                   </div>
+
+                  {post.category && (
+                    <Link
+                      href={`/categories/${encodeSlug(post.category)}` as any}
+                      className="no-link-underline inline-flex items-center gap-1 whitespace-nowrap text-inherit hover:text-inherit"
+                      style={{ color: 'inherit' }}
+                    >
+                      <CategoryIcon category={post.category} className="h-4 w-4" />
+                      <span>./{post.category}</span>
+                    </Link>
+                  )}
                   
                   {post.readingTime && (
                     <div className="inline-flex items-center gap-1 whitespace-nowrap">
