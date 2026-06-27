@@ -5,7 +5,7 @@
 ## 技术栈
 
 - **前端开发**：React, Next.js, TypeScript, Tailwind CSS
-- **后端开发**：Node.js, Python, Go, Java
+- **后端开发**：Java，Node.js, Python, Go, Java
 - **数据库**：PostgreSQL, MongoDB, Redis
 - **工具**：Docker, Git, VS Code
 
