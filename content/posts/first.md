@@ -1,5 +1,5 @@
 ---
-title: 测试同步插件
+title: first
 date: 2026-06-27
 tags:
   - Java
