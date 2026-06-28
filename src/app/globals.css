@@ -276,6 +276,31 @@
     @apply bg-neutral-400 dark:bg-neutral-600;
   }
 
+  .toc-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d4 transparent;
+  }
+
+  .dark .toc-scrollbar {
+    scrollbar-color: #404040 transparent;
+  }
+
+  .toc-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .toc-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .toc-scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-neutral-300/70 dark:bg-neutral-700/60;
+  }
+
+  .toc-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-400/80 dark:bg-neutral-600/70;
+  }
+
   /* 目录导航样式 */
   .toc-container {
     @apply transition-all duration-300;
@@ -399,7 +424,8 @@
 
 /* Mac 风格代码块样式 */
 .prose pre[class*="language-"] {
-  @apply bg-neutral-50 text-neutral-900 rounded-lg my-6;
+  @apply text-neutral-900 rounded-lg my-6;
+  background: #f5f5f5;
   font-family: var(--font-mono);
   font-size: 0.875rem;
   line-height: 1.7;
@@ -449,7 +475,7 @@
   top: 2.5rem; /* 与标题栏高度对齐 */
   left: 0;
   width: 3.5rem;
-  background: rgba(0, 0, 0, 0.02);
+  background: #f5f5f5;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   padding: 1rem 0;
   user-select: none;
@@ -458,6 +484,7 @@
   display: flex;
   flex-direction: column;
   bottom: 0; /* 确保行号容器与代码区域同高 */
+  overflow: hidden;
   /* 防止影响其他元素 */
   isolation: isolate;
 }
@@ -470,7 +497,7 @@
   left: 0;
   right: 0;
   height: 2.5rem;
-  background: rgba(0, 0, 0, 0.03);
+  background: #f5f5f5;
   border-radius: 8px 8px 0 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -524,20 +551,21 @@
 
 /* 深色主题 Mac 代码块 */
 .dark .prose pre[class*="language-"] {
-  @apply bg-neutral-800 text-neutral-100;
+  @apply text-neutral-100;
+  background: #141414;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 /* 深色主题 Mac 标题栏 */
 .dark .prose pre[class*="language-"]::before {
-  background: rgba(255, 255, 255, 0.05);
+  background: #141414;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* 深色主题语言标签 */
 .dark .prose pre[class*="language-"] .language-label {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.5);
   border: none;
 }
@@ -549,6 +577,10 @@
 }
 
 /* 行号单个样式 - 严格限制在行号元素内 */
+.prose pre[class*="language-"] .line-numbers-container .line-numbers-list {
+  will-change: transform;
+}
+
 .prose pre[class*="language-"] .line-numbers-container .line-number {
   display: block;
   text-align: right !important; /* 使用!important确保仅对行号生效 */
@@ -565,8 +597,8 @@
 
 /* 深色主题行号样式 */
 .dark .prose pre[class*="language-"] .line-numbers-container {
-  background: rgba(255, 255, 255, 0.03);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background: #141414;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .dark .prose pre[class*="language-"] .line-numbers-container .line-number {
@@ -705,34 +737,33 @@
 /* 复制按钮样式 - Mac 风格适配 */
 .copy-code-btn {
   transition: all 0.2s ease-in-out;
-  backdrop-filter: blur(8px);
   /* 调整位置避开 Mac 标题栏 */
   top: 0.5rem !important;
   right: 1rem !important;
 }
 
 .copy-code-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 
 /* 浅色主题复制按钮 */
 .prose pre[class*="language-"] .copy-code-btn {
-  @apply bg-neutral-900/10 hover:bg-neutral-900/20 text-neutral-700 hover:text-neutral-900;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  @apply bg-transparent text-neutral-500 hover:text-neutral-900;
+  border: none;
+  box-shadow: none;
 }
 
 /* 深色主题复制按钮 */
 .dark .prose pre[class*="language-"] .copy-code-btn {
-  @apply bg-white/10 hover:bg-white/20 text-white/70 hover:text-white/90;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  @apply bg-transparent text-white/50 hover:text-white/90;
+  border: none;
+  box-shadow: none;
 }
 
 /* 复制成功状态 */
 .copy-code-btn.copied {
-  @apply !bg-green-500/20 !text-green-400 !border-green-500/30;
-  transform: scale(1.05);
+  @apply !bg-transparent !text-green-400;
+  transform: translateY(-1px);
 }
 
 /* 行内代码样式 */
@@ -754,7 +785,7 @@
 }
 
 .prose pre[class*="language-"]::-webkit-scrollbar-track {
-  @apply bg-neutral-100;
+  background: #f5f5f5;
   border-radius: 4px;
 }
 
@@ -768,7 +799,7 @@
 }
 
 .dark .prose pre[class*="language-"]::-webkit-scrollbar-track {
-  @apply bg-neutral-800;
+  background: #141414;
 }
 
 .dark .prose pre[class*="language-"]::-webkit-scrollbar-thumb {

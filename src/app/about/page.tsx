@@ -57,15 +57,15 @@ export default function AboutPage() {
   const actualContent = (
     <div className="content-wrapper py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="mb-8 inline-flex items-center gap-2 text-3xl font-bold fade-in-up">
-          <CircleUserRound className="h-7 w-7" strokeWidth={1.8} aria-hidden="true" />
+        <h1 className="mb-8 inline-flex items-center gap-2 text-2xl font-bold fade-in-up">
+          <CircleUserRound className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
           <span>关于</span>
         </h1>
         
         <StaggerContainer className="space-y-8">
           <div className="card p-8">
             <div 
-              className="prose prose-gray dark:prose-invert max-w-none prose-headings:text-foreground prose-p:text-muted-foreground"
+              className="prose prose-gray dark:prose-invert max-w-none prose-h1:text-2xl prose-headings:text-foreground prose-p:text-muted-foreground"
               dangerouslySetInnerHTML={{ __html: aboutMePage?.htmlContent || '' }}
             />
             
@@ -106,7 +106,7 @@ export default function AboutPage() {
           
           <div className="card p-8">
             <div 
-              className="prose prose-gray dark:prose-invert max-w-none prose-headings:text-foreground prose-p:text-muted-foreground"
+              className="prose prose-gray dark:prose-invert max-w-none prose-h1:text-2xl prose-headings:text-foreground prose-p:text-muted-foreground"
               dangerouslySetInnerHTML={{ __html: aboutBlogPage?.htmlContent || '' }}
             />
           </div>

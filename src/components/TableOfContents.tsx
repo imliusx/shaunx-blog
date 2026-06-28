@@ -129,7 +129,7 @@ const SidebarTOC: React.FC<TableOfContentsProps> = ({
       </div>
       <nav 
         ref={navRef}
-        className="max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-thin"
+        className="max-h-[calc(100vh-8rem)] overflow-y-auto pb-12 toc-scrollbar"
       >
         <TOCTree
           items={headings}
@@ -235,7 +235,7 @@ const FloatingTOC: React.FC<TableOfContentsProps> = ({
             
             <nav 
               ref={navRef}
-              className="p-4 overflow-y-auto max-h-[calc(100vh-5rem)] scrollbar-thin"
+              className="p-4 pb-16 overflow-y-auto max-h-[calc(100vh-5rem)] toc-scrollbar"
             >
               <TOCTree
                 items={headings}

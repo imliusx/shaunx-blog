@@ -30,7 +30,7 @@ export function PostCard({ post }: PostCardProps) {
         )}
         
         {/* 内容区域 */}
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col p-6">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col px-6 py-5">
           <div className="min-w-0 flex-1 overflow-hidden">
             <h3 className="text-xl font-semibold mb-2 line-clamp-2 leading-snug">
               <Link 
@@ -50,15 +50,15 @@ export function PostCard({ post }: PostCardProps) {
             )}
             
             {post.tags.length > 0 && (
-              <div className="flex h-7 items-start gap-2 overflow-hidden">
-                <TagList tags={post.tags} />
+              <div className="min-h-8 overflow-hidden pb-1">
+                <TagList tags={post.tags} wrap={false} className="overflow-hidden" />
               </div>
             )}
           </div>
           
           {/* 底部元信息 */}
           <div>
-            <div className="my-3 h-px bg-[repeating-linear-gradient(to_right,currentColor_0,currentColor_8px,transparent_8px,transparent_14px)] text-neutral-300 dark:text-neutral-700" />
+            <div className="mt-2 mb-3 h-px bg-[repeating-linear-gradient(to_right,currentColor_0,currentColor_8px,transparent_8px,transparent_14px)] text-neutral-300 dark:text-neutral-700" />
             <div className="text-sm leading-5 text-neutral-500 dark:text-neutral-500">
               <div className="grid grid-cols-[minmax(0,1fr),auto] gap-x-3 gap-y-2 sm:hidden">
                 <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
@@ -90,7 +90,7 @@ export function PostCard({ post }: PostCardProps) {
                 
                 <Link 
                   href={postHref}
-                  className="col-start-2 row-start-2 justify-self-end whitespace-nowrap text-right font-medium text-neutral-600 dark:text-neutral-400"
+                  className="col-start-2 row-start-2 inline-block justify-self-end whitespace-nowrap pb-1 text-right font-medium text-neutral-600 dark:text-neutral-400"
                 >
                   阅读更多 -&gt;
                 </Link>
@@ -126,7 +126,7 @@ export function PostCard({ post }: PostCardProps) {
                 
                 <Link 
                   href={postHref}
-                  className="whitespace-nowrap text-right font-medium text-neutral-600 dark:text-neutral-400"
+                  className="inline-block whitespace-nowrap pb-1 text-right font-medium text-neutral-600 dark:text-neutral-400"
                 >
                   阅读更多 -&gt;
                 </Link>

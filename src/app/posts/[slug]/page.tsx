@@ -175,7 +175,7 @@ export default function PostPage() {
             )}
             
             {post?.description && (
-              <div className="text-lg text-muted-foreground mb-8 p-4 bg-muted rounded-lg">
+              <div className="text-base text-muted-foreground mb-8 p-4 bg-muted rounded-lg">
                 {post.description}
               </div>
             )}

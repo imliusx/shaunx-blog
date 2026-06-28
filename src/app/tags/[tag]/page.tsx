@@ -76,11 +76,11 @@ export default function TagPostsPage() {
       {/* 标签头部 */}
       <div className="mb-8 fade-in-up">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="p-3 bg-primary/10 rounded-lg">
-            <Hash className="h-6 w-6 text-primary" />
+          <div className="p-2.5 bg-primary/10 rounded-lg">
+            <Hash className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold">{tag}</h1>
+            <h1 className="text-2xl font-bold">{tag}</h1>
             <p className="text-muted-foreground">
               {count} 篇文章
             </p>

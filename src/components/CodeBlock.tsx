@@ -1,21 +1,22 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { memo, useEffect, useRef } from 'react';
 
 interface CodeBlockProps {
   html: string;
 }
 
-export function CodeBlock({ html }: CodeBlockProps) {
+export const CodeBlock = memo(function CodeBlock({ html }: CodeBlockProps) {
   const codeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!codeRef.current) return;
 
+    const cleanupFns: Array<() => void> = [];
+
     // 等待一个微任务周期，确保 DOM 已经更新
     const timeoutId = setTimeout(() => {
-      const codeBlocks = codeRef.current?.querySelectorAll('pre[class*="language-"]');
+      const codeBlocks = codeRef.current?.querySelectorAll('pre');
       
       if (!codeBlocks) return;
 
@@ -27,13 +28,18 @@ export function CodeBlock({ html }: CodeBlockProps) {
         if (htmlBlock.querySelector('.copy-code-btn')) return;
 
         // 获取代码内容
-        const codeElement = htmlBlock.querySelector('code');
+        const codeElement = htmlBlock.querySelector('code') as HTMLElement | null;
         if (!codeElement) return;
 
-        // 提取语言信息
-        const className = htmlBlock.className;
-        const languageMatch = className.match(/language-(\w+)/);
+        // 提取语言信息，普通代码块默认按 plaintext 处理。
+        const className = `${htmlBlock.className} ${codeElement.className}`;
+        const languageMatch = className.match(/language-([\w-]+)/);
         const language = languageMatch ? languageMatch[1] : 'code';
+        const normalizedLanguage = language === 'code' ? 'plaintext' : language;
+        if (!languageMatch) {
+          htmlBlock.classList.add('language-plaintext');
+          codeElement.classList.add('language-plaintext');
+        }
         
         // 语言名称映射
         const languageNames: Record<string, string> = {
@@ -60,7 +66,9 @@ export function CodeBlock({ html }: CodeBlockProps) {
           'yaml': 'YAML',
           'xml': 'XML',
           'markdown': 'Markdown',
-          'md': 'Markdown'
+          'md': 'Markdown',
+          'plaintext': 'Plain Text',
+          'text': 'Plain Text'
         };
 
         // 添加行号功能
@@ -77,33 +85,46 @@ export function CodeBlock({ html }: CodeBlockProps) {
           // 创建行号容器 - 添加到pre元素而不是code元素
           const lineNumbersContainer = document.createElement('div');
           lineNumbersContainer.className = 'line-numbers-container';
+          const lineNumbersList = document.createElement('div');
+          lineNumbersList.className = 'line-numbers-list';
           
           // 为每一行创建行号
           for (let i = 1; i <= lineCount; i++) {
             const lineNumber = document.createElement('span');
             lineNumber.className = 'line-number';
             lineNumber.textContent = i.toString();
-            lineNumbersContainer.appendChild(lineNumber);
+            lineNumbersList.appendChild(lineNumber);
           }
+
+          lineNumbersContainer.appendChild(lineNumbersList);
           
           // 添加行号容器到pre元素
           htmlBlock.appendChild(lineNumbersContainer);
           htmlBlock.classList.add('has-line-numbers');
+
+          const syncLineNumbers = () => {
+            lineNumbersList.style.transform = `translateY(-${codeElement.scrollTop}px)`;
+          };
+
+          codeElement.addEventListener('scroll', syncLineNumbers, { passive: true });
+          cleanupFns.push(() => codeElement.removeEventListener('scroll', syncLineNumbers));
+          syncLineNumbers();
         }
         
         // 创建语言标签
         const languageLabel = document.createElement('div');
         languageLabel.className = 'language-label';
-        languageLabel.textContent = languageNames[language] || language.toUpperCase();
+        languageLabel.textContent = languageNames[normalizedLanguage] || normalizedLanguage.toUpperCase();
 
         // 创建复制按钮
         const copyButton = document.createElement('button');
-        copyButton.className = 'copy-code-btn absolute flex items-center gap-1 px-2 py-1 text-xs rounded transition-all duration-200 opacity-0 hover:opacity-100 z-20';
+        copyButton.type = 'button';
+        copyButton.setAttribute('aria-label', '复制代码');
+        copyButton.className = 'copy-code-btn absolute inline-flex h-7 w-7 items-center justify-center transition-all duration-200 z-20';
         copyButton.innerHTML = `
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
           </svg>
-          <span>Copy</span>
         `;
 
         // 添加复制功能
@@ -115,20 +136,18 @@ export function CodeBlock({ html }: CodeBlockProps) {
             
             // 更新按钮状态
             copyButton.innerHTML = `
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
-              <span>Copied!</span>
             `;
             copyButton.classList.add('copied');
             
             // 3秒后恢复
             setTimeout(() => {
               copyButton.innerHTML = `
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                 </svg>
-                <span>Copy</span>
               `;
               copyButton.classList.remove('copied');
             }, 3000);
@@ -142,18 +161,13 @@ export function CodeBlock({ html }: CodeBlockProps) {
         htmlBlock.appendChild(languageLabel);
         htmlBlock.appendChild(copyButton);
 
-        // 添加悬停显示效果
-        htmlBlock.addEventListener('mouseenter', () => {
-          copyButton.style.opacity = '1';
-        });
-
-        htmlBlock.addEventListener('mouseleave', () => {
-          copyButton.style.opacity = '0';
-        });
       });
     }, 100);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId);
+      cleanupFns.forEach((cleanup) => cleanup());
+    };
   }, [html]);
 
   return (
@@ -163,4 +177,4 @@ export function CodeBlock({ html }: CodeBlockProps) {
       className="code-block-container"
     />
   );
-}
+});

@@ -52,9 +52,9 @@ export default function CategoriesPage() {
   const actualContent = (
     <div className="content-wrapper py-12">
       <div className="mb-8 fade-in-up">
-        <h1 className="mb-4 inline-flex items-center gap-2 text-3xl font-bold">
-          <Folder className="h-7 w-7" strokeWidth={1.8} aria-hidden="true" />
-          <span>Categories</span>
+        <h1 className="mb-4 inline-flex items-center gap-2 text-2xl font-bold">
+          <Folder className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
+          <span>分类</span>
         </h1>
         <p className="text-muted-foreground">
           $ ls ./categories

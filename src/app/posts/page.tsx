@@ -63,8 +63,8 @@ function PostsPageContent() {
   const actualContent = (
     <div className="content-wrapper py-12">
       <div className="mb-8 fade-in-up">
-        <h1 className="inline-flex items-center gap-2 text-3xl font-bold">
-          <FileCode2 className="h-7 w-7" strokeWidth={1.8} aria-hidden="true" />
+        <h1 className="inline-flex items-center gap-2 text-2xl font-bold">
+          <FileCode2 className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
           <span>所有文章</span>
         </h1>
       </div>
