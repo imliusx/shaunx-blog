@@ -18,7 +18,7 @@ export function TagList({ tags, showIcon = false, linkable = false }: TagListPro
           <Link
             key={tag}
             href={`/tags/${encodeURIComponent(tag)}`}
-            className="inline-flex items-center rounded-md bg-neutral-100 dark:bg-neutral-800 px-3 py-1 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+            className="no-link-underline inline-flex items-center rounded-md bg-neutral-100 dark:bg-neutral-800 px-3 py-1 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
           >
             {tag}
           </Link>

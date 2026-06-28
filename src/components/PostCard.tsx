@@ -35,7 +35,7 @@ export function PostCard({ post }: PostCardProps) {
             <h3 className="text-xl font-semibold mb-2 line-clamp-2 leading-snug">
               <Link 
                 href={postHref}
-                className="text-neutral-900 dark:text-neutral-100"
+                className="inline-block pb-1 text-neutral-900 dark:text-neutral-100"
               >
                 {post.title}
               </Link>
