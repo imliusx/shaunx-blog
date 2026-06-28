@@ -7,8 +7,25 @@ tags:
   - Spring
   - Redis
 description: 文章摘要
-cover: images/2026/06/28/img-20260628101208032.jpeg
+cover:
 published: true
 ---
 测试同步插件的，可能图片太大了
-![](images/2026/06/28/img-20260628101208032.jpeg)
+
+- [ ] 第一
+- [ ] 第二
+
+> 引用格式
+
+`public class`
+
+
+====
+
+```java
+public class Application 
+
+}
+
+```
+
