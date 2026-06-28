@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './ThemeToggle';
 import { useConfig } from '@/hooks/useConfig';
@@ -96,7 +97,15 @@ export function Header() {
         <div className="content-wrapper">
           <div className="flex h-[72px] items-center justify-between fade-in">
             <div className="flex items-center space-x-2">
-              <Link href="/" className="pb-1 text-xl font-medium text-neutral-900 transition-smooth [background-position:left_calc(100%+4px)] dark:text-neutral-100">
+              <Link href="/" className="inline-flex items-center gap-2 pb-1 text-xl font-medium text-neutral-900 transition-smooth [background-position:left_calc(100%+4px)] dark:text-neutral-100">
+                <Image
+                  src="/blog-logo.svg"
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 shrink-0"
+                  aria-hidden="true"
+                />
                 {config.title}
               </Link>
             </div>

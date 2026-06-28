@@ -30,6 +30,12 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: ['博客', '技术', '前端', 'Next.js', 'React'],
     authors: [{ name: siteConfig.author.name, url: siteConfig.url }],
     creator: siteConfig.author.name,
+    icons: {
+      icon: [
+        { url: '/blog-logo.svg', type: 'image/svg+xml' },
+      ],
+      shortcut: '/blog-logo.svg',
+    },
     openGraph: {
       type: 'website',
       locale: 'zh_CN',
