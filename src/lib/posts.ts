@@ -11,7 +11,7 @@ import { Post, PostMeta, PostFrontmatter } from '@/types';
 import { calculateReadingTime, generateExcerpt } from './utils';
 import { decodeSlug } from './slug';
 import { POST_CATEGORIES, normalizeCategory } from './categories';
-import { normalizeRemarkImages } from './markdown-images';
+import { normalizeMarkdownImageUrl, normalizeRemarkImages } from './markdown-images';
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
@@ -132,7 +132,7 @@ function postFromFileInfo(info: PostFileInfo): Post {
     description: info.frontmatter.description,
     content: info.content,
     tags: info.frontmatter.tags || [],
-    cover: info.frontmatter.cover,
+    cover: info.frontmatter.cover ? normalizeMarkdownImageUrl(info.frontmatter.cover) : undefined,
     excerpt,
     readingTime,
     published: info.frontmatter.published ?? true,
