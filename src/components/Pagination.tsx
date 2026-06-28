@@ -36,7 +36,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
           key={1}
           href={generatePageUrl(1) as any}
           className={cn(
-            'px-3 py-2 text-sm rounded-md transition-colors',
+            'px-3 py-2 text-sm rounded-none transition-colors',
             'hover:bg-accent hover:text-accent-foreground',
             currentPage === 1
               ? 'bg-primary text-primary-foreground'
@@ -63,7 +63,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
           key={i}
           href={generatePageUrl(i) as any}
           className={cn(
-            'px-3 py-2 text-sm rounded-md transition-colors',
+            'px-3 py-2 text-sm rounded-none transition-colors',
             'hover:bg-accent hover:text-accent-foreground',
             currentPage === i
               ? 'bg-primary text-primary-foreground'
@@ -90,7 +90,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
           key={totalPages}
           href={generatePageUrl(totalPages) as any}
           className={cn(
-            'px-3 py-2 text-sm rounded-md transition-colors',
+            'px-3 py-2 text-sm rounded-none transition-colors',
             'hover:bg-accent hover:text-accent-foreground',
             currentPage === totalPages
               ? 'bg-primary text-primary-foreground'
@@ -110,7 +110,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
       <Link
         href={hasPrevPage ? generatePageUrl(currentPage - 1) as any : '#'}
         className={cn(
-          'flex items-center px-3 py-2 text-sm rounded-md transition-colors',
+          'flex items-center px-3 py-2 text-sm rounded-none transition-colors',
           hasPrevPage
             ? 'hover:bg-accent hover:text-accent-foreground text-muted-foreground'
             : 'text-muted-foreground/50 cursor-not-allowed'
@@ -128,7 +128,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
       <Link
         href={hasNextPage ? generatePageUrl(currentPage + 1) as any : '#'}
         className={cn(
-          'flex items-center px-3 py-2 text-sm rounded-md transition-colors',
+          'flex items-center px-3 py-2 text-sm rounded-none transition-colors',
           hasNextPage
             ? 'hover:bg-accent hover:text-accent-foreground text-muted-foreground'
             : 'text-muted-foreground/50 cursor-not-allowed'

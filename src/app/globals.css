@@ -366,6 +366,47 @@
   font-family: var(--font-mono);
 }
 
+.prose table {
+  @apply my-6 w-full text-sm;
+  display: table;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid theme('colors.neutral.300');
+  border-radius: 8px;
+  font-family: var(--font-mono);
+}
+
+.prose thead {
+  @apply bg-neutral-100 text-neutral-800;
+}
+
+.prose th,
+.prose td {
+  @apply border-0 border-r border-b border-neutral-300 px-4 py-2.5 text-left align-top;
+}
+
+.prose th {
+  @apply font-medium;
+}
+
+.prose th:last-child,
+.prose td:last-child {
+  @apply border-r-0;
+}
+
+.prose tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+.prose tbody tr:nth-child(even) {
+  @apply bg-neutral-100/50;
+}
+
+.prose tbody tr:hover {
+  @apply bg-neutral-100/80;
+}
+
 .prose blockquote {
   @apply border-l-4 border-neutral-300 pl-6 italic text-neutral-600 my-6;
   font-style: italic;
@@ -399,6 +440,37 @@
 .dark .prose h3 {
   @apply text-neutral-100;
   font-family: var(--font-mono);
+}
+
+.dark .prose thead {
+  @apply bg-neutral-800/80 text-neutral-300;
+}
+
+.dark .prose table {
+  border-color: theme('colors.neutral.700');
+}
+
+.dark .prose th,
+.dark .prose td {
+  @apply border-neutral-700;
+}
+
+.dark .prose th {
+  @apply text-neutral-300;
+}
+
+.dark .prose th a,
+.dark .prose th a:hover {
+  @apply text-neutral-300;
+  background-image: none;
+}
+
+.dark .prose tbody tr:nth-child(even) {
+  @apply bg-neutral-800/30;
+}
+
+.dark .prose tbody tr:hover {
+  @apply bg-neutral-800/50;
 }
 
 .dark .prose blockquote {
@@ -518,11 +590,11 @@
   z-index: 10;
 }
 
-/* 语言标签 - 低调显示在红绿灯按钮右边 */
+/* 语言标签 - 显示在标题栏右侧，避开复制按钮 */
 .prose pre[class*="language-"] .language-label {
   position: absolute;
   top: 0.6rem;
-  left: 4.5rem;
+  right: 3rem;
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 400;

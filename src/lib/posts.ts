@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
+import remarkGfm from 'remark-gfm';
 import remarkHtml from 'remark-html';
 import { rehype } from 'rehype';
 import rehypePrismPlus from 'rehype-prism-plus';
@@ -224,6 +225,7 @@ export async function markdownToHtml(markdown: string): Promise<string> {
   // 首先将 markdown 转换为 HTML
   const remarkResult = await remark()
     .use(normalizeRemarkImages)
+    .use(remarkGfm)
     .use(remarkHtml, { sanitize: false })
     .process(markdown);
     
