@@ -11,6 +11,7 @@ import { Post, PostMeta, PostFrontmatter } from '@/types';
 import { calculateReadingTime, generateExcerpt } from './utils';
 import { decodeSlug } from './slug';
 import { POST_CATEGORIES, normalizeCategory } from './categories';
+import { normalizeRemarkImages } from './markdown-images';
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
@@ -222,6 +223,7 @@ export function getPaginatedPosts(page: number = 1, limit: number = 6) {
 export async function markdownToHtml(markdown: string): Promise<string> {
   // 首先将 markdown 转换为 HTML
   const remarkResult = await remark()
+    .use(normalizeRemarkImages)
     .use(remarkHtml, { sanitize: false })
     .process(markdown);
     

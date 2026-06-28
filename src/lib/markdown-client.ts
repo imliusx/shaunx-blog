@@ -3,6 +3,16 @@
  * 由于remark/rehype在客户端的限制，这里提供简化的预览功能
  */
 
+import { normalizeMarkdownImageUrl } from './markdown-images';
+
+function escapeAttribute(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 // 简单的Markdown到HTML转换，用于客户端预览
 export function markdownToHtml(markdown: string): Promise<string> {
   return new Promise((resolve) => {
@@ -19,6 +29,12 @@ export function markdownToHtml(markdown: string): Promise<string> {
       .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+
+      // 图片
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_match, alt: string, src: string) => {
+        const normalizedSrc = normalizeMarkdownImageUrl(src);
+        return `<img src="${escapeAttribute(normalizedSrc)}" alt="${escapeAttribute(alt)}" />`;
+      })
       
       // 链接
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 dark:text-blue-400 hover:underline">$1</a>')
