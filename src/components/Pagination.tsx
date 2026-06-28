@@ -15,7 +15,8 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
 
   const generatePageUrl = (page: number) => {
     if (page === 1) return basePath;
-    return `${basePath}?page=${page}`;
+    const separator = basePath.includes('?') ? '&' : '?';
+    return `${basePath}${separator}page=${page}`;
   };
 
   const renderPageNumbers = () => {

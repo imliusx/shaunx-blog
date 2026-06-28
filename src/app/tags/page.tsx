@@ -1,13 +1,53 @@
 'use client';
 
-import type { Metadata } from 'next';
+import { FormEvent, Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Hash } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Hash, Search, X } from 'lucide-react';
 import { useTags } from '@/hooks/useTags';
 import { LoadingTransition } from '@/components/LoadingComponents';
 
-export default function TagsPage() {
+function TagsPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search')?.trim() || '';
+  const [searchValue, setSearchValue] = useState(searchQuery);
   const { tags, loading, error } = useTags();
+
+  useEffect(() => {
+    setSearchValue(searchQuery);
+  }, [searchQuery]);
+
+  const filteredTags = useMemo(() => {
+    if (!searchQuery) return tags;
+
+    const searchLower = searchQuery.toLowerCase();
+    return tags.filter(({ tag }) => tag.toLowerCase().includes(searchLower));
+  }, [searchQuery, tags]);
+
+  const updateSearch = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const trimmedValue = value.trim();
+
+    if (trimmedValue) {
+      params.set('search', trimmedValue);
+    } else {
+      params.delete('search');
+    }
+
+    const queryString = params.toString();
+    router.push(queryString ? `/tags?${queryString}` : '/tags');
+  };
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    updateSearch(searchValue);
+  };
+
+  const handleClearSearch = () => {
+    setSearchValue('');
+    updateSearch('');
+  };
 
   if (error) {
     return (
@@ -50,19 +90,50 @@ export default function TagsPage() {
 
   const actualContent = (
     <div className="content-wrapper py-12">
-      <div className="mb-8 fade-in-up">
-        <h1 className="mb-4 inline-flex items-center gap-2 text-2xl font-bold">
-          <Hash className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
-          <span>标签</span>
-        </h1>
-        <p className="text-muted-foreground">
-          Browse articles by tags, total {tags.length} tags
-        </p>
+      <div className="mb-8 flex flex-col gap-4 fade-in-up sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="mb-4 inline-flex items-center gap-2 text-2xl font-bold">
+            <Hash className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
+            <span>标签</span>
+          </h1>
+          <p className="text-muted-foreground">
+            Browse articles by tags, total {tags.length} tags
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleSearchSubmit}
+          className="relative w-48 max-w-full sm:w-56"
+          role="search"
+        >
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(event) => setSearchValue(event.target.value)}
+            placeholder="$ grep tags"
+            className="h-8 w-full border border-neutral-300 bg-transparent pl-9 pr-9 font-mono text-xs text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder:text-neutral-600 dark:focus:border-neutral-400"
+          />
+          {searchValue && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="no-link-underline absolute right-3 top-1/2 inline-flex h-5 w-5 -translate-y-1/2 items-center justify-center text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
+              aria-label="清空搜索"
+            >
+              <X className="h-4 w-4" strokeWidth={1.8} />
+            </button>
+          )}
+        </form>
       </div>
 
-      {tags.length > 0 ? (
+      {filteredTags.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
-          {tags.map(({ tag, count }) => (
+          {filteredTags.map(({ tag, count }) => (
             <Link
               key={tag}
               href={`/tags/${encodeURIComponent(tag)}`}
@@ -92,9 +163,13 @@ export default function TagsPage() {
       ) : (
         <div className="text-center py-16 fade-in">
           <Hash className="h-16 w-16 text-muted-foreground/50 mx-auto mb-4" />
-          <h2 className="text-2xl font-semibold mb-4">暂无标签</h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            {searchQuery ? '未找到标签' : '暂无标签'}
+          </h2>
           <p className="text-muted-foreground">
-            还没有任何标签，发布文章后标签会在这里显示。
+            {searchQuery
+              ? `没有匹配「${searchQuery}」的标签。`
+              : '还没有任何标签，发布文章后标签会在这里显示。'}
           </p>
         </div>
       )}
@@ -109,5 +184,25 @@ export default function TagsPage() {
     >
       {actualContent}
     </LoadingTransition>
+  );
+}
+
+export default function TagsPage() {
+  return (
+    <Suspense fallback={
+      <div className="content-wrapper py-12">
+        <div className="mb-8">
+          <div className="h-8 w-32 shimmer rounded mb-4"></div>
+          <div className="h-4 w-48 shimmer rounded"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="card p-4 card-loading min-h-[96px]" />
+          ))}
+        </div>
+      </div>
+    }>
+      <TagsPageContent />
+    </Suspense>
   );
 }
