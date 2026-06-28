@@ -10,7 +10,7 @@ import { encodeSlug } from '@/lib/slug';
 
 export default function HomePage() {
   const { data: config, loading, error } = useConfig();
-  const homeViewportClass = 'h-[calc(100svh-72px)] max-h-[calc(100svh-72px)] overflow-hidden md:h-[calc(100dvh-72px)] md:max-h-[calc(100dvh-72px)]';
+  const homeViewportClass = 'h-[calc(100svh-136px)] max-h-[calc(100svh-136px)] overflow-hidden md:h-[calc(100dvh-136px)] md:max-h-[calc(100dvh-136px)]';
   const homeContentClass = 'content-wrapper h-full max-h-full overflow-hidden';
   const homeSectionClass = 'flex h-full min-h-0 flex-col items-center justify-center overflow-hidden py-4 text-center md:py-8';
 

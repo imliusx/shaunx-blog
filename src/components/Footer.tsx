@@ -1,94 +1,37 @@
-import Link from 'next/link';
-import { Github, Mail, Twitter, Rss } from 'lucide-react';
-import { siteConfig } from '@/lib/config';
+'use client';
+
+import { usePathname } from 'next/navigation';
+import { Terminal } from 'lucide-react';
+import { useConfig } from '@/hooks/useConfig';
 
 export function Footer() {
+  const pathname = usePathname();
+  const { data: config, loading } = useConfig();
   const currentYear = new Date().getFullYear();
+  const yearRange = `2020-${currentYear}`;
+
+  if (loading || !config) return null;
+
+  const isAdminLoginPage = pathname === `/${config.secureEntrance}`;
+  const isAdminPage = pathname.startsWith('/admin');
+
+  if (isAdminLoginPage || isAdminPage) return null;
 
   return (
-    <footer className="border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-      <div className="content-wrapper">
-        <div className="py-8 md:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="font-semibold text-lg mb-4">{siteConfig.title}</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                {siteConfig.description}
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-4">导航</h4>
-              <ul className="space-y-2 text-sm">
-                {siteConfig.nav.map((item) => (
-                  <li key={item.href}>
-                    <Link 
-                      href={item.href as any}
-                      className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-4">联系方式</h4>
-              <div className="flex space-x-4">
-                {siteConfig.social.github && (
-                  <a
-                    href={siteConfig.social.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                    aria-label="GitHub"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                )}
-                {siteConfig.social.twitter && (
-                  <a
-                    href={siteConfig.social.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                    aria-label="Twitter"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </a>
-                )}
-                {siteConfig.social.email && (
-                  <a
-                    href={siteConfig.social.email}
-                    className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                    aria-label="Email"
-                  >
-                    <Mail className="h-5 w-5" />
-                  </a>
-                )}
-                <a
-                  href="/api/rss"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-                  aria-label="RSS Feed"
-                  title="订阅RSS"
-                >
-                  <Rss className="h-5 w-5" />
-                </a>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
-              <p>© {currentYear} {siteConfig.author.name}. 保留所有权利。</p>
-              <p className="mt-2 md:mt-0">
-                基于 Next.js 构建
-              </p>
-            </div>
-          </div>
+    <footer className="h-16 border-t border-neutral-200 bg-neutral-50/80 backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-900/80">
+      <div className="content-wrapper flex h-full flex-col items-start justify-center gap-0.5 text-xs text-neutral-500 dark:text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="inline-flex min-w-0 items-center gap-2">
+          <Terminal className="h-4 w-4 shrink-0" strokeWidth={1.8} aria-hidden="true" />
+          <span className="truncate">
+            $ echo &quot;{yearRange} {config.author.name}&quot;
+          </span>
+        </div>
+
+        <div className="inline-flex min-w-0 items-center gap-2 sm:justify-end">
+          <span className="text-neutral-400 dark:text-neutral-600" aria-hidden="true">
+            {'//'}
+          </span>
+          <span className="truncate">created by {config.author.name}</span>
         </div>
       </div>
     </footer>
