@@ -50,8 +50,8 @@ export function PostCard({ post }: PostCardProps) {
             )}
             
             {post.tags.length > 0 && (
-              <div className="min-h-8 overflow-hidden pb-1">
-                <TagList tags={post.tags} wrap={false} className="overflow-hidden" />
+              <div className="min-h-8 overflow-visible pb-1 md:overflow-hidden">
+                <TagList tags={post.tags} className="md:flex-nowrap md:overflow-hidden" />
               </div>
             )}
           </div>
