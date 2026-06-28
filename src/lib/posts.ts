@@ -16,6 +16,37 @@ import { normalizeMarkdownImageUrl, normalizeRemarkImages } from './markdown-ima
 
 const postsDirectory = path.join(process.cwd(), 'content/posts');
 
+interface HastNode {
+  type?: string;
+  tagName?: string;
+  properties?: Record<string, unknown>;
+  children?: HastNode[];
+}
+
+function rehypeWrapTables() {
+  return (tree: HastNode) => {
+    const wrapTables = (node: HastNode) => {
+      if (!node.children) return;
+
+      node.children = node.children.map((child) => {
+        if (child.type === 'element' && child.tagName === 'table') {
+          return {
+            type: 'element',
+            tagName: 'div',
+            properties: { className: ['table-scroll'] },
+            children: [child],
+          };
+        }
+
+        wrapTables(child);
+        return child;
+      });
+    };
+
+    wrapTables(tree);
+  };
+}
+
 export interface PostFileInfo {
   fileName: string;
   fileSlug: string;
@@ -238,6 +269,7 @@ export async function markdownToHtml(markdown: string): Promise<string> {
       // 确保行号功能正确启用
       lineNumbersStyle: true
     })
+    .use(rehypeWrapTables)
     .use(rehypeStringify)
     .process(remarkResult.toString());
     

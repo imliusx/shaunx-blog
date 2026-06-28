@@ -366,8 +366,12 @@
   font-family: var(--font-mono);
 }
 
+.prose .table-scroll {
+  @apply my-6 max-w-full overflow-x-auto rounded-lg border border-neutral-300;
+}
+
 .prose table {
-  @apply my-6 w-full text-sm;
+  @apply my-6 w-full min-w-[36rem] text-sm;
   display: table;
   overflow: hidden;
   border-collapse: separate;
@@ -375,6 +379,12 @@
   border: 1px solid theme('colors.neutral.300');
   border-radius: 8px;
   font-family: var(--font-mono);
+}
+
+.prose .table-scroll table {
+  @apply my-0 border-0;
+  overflow: visible;
+  border-radius: 0;
 }
 
 .prose thead {
@@ -444,6 +454,10 @@
 
 .dark .prose thead {
   @apply bg-neutral-800/80 text-neutral-300;
+}
+
+.dark .prose .table-scroll {
+  @apply border-neutral-700;
 }
 
 .dark .prose table {
