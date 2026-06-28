@@ -7,7 +7,7 @@
 - **编程语言**：Java、Scala、Python
 - **后端框架**：Spring、Spring Boot、Spring MVC、Spring Cloud、MyBatis
 - **数据库**：MySQL、Oracle、MongoDB、Elasticsearch
-- **中间件**：Redis、RabbitMQ
+- **中间件**：Redis、RabbitMQ、Kafka
 - **网络通信**：TCP/IP、HTTP、Netty
 - **JVM 与并发**：JVM、GC、NIO、多线程、线程池、AQS
 - **Linux 与运维**：Linux、Shell、Docker
