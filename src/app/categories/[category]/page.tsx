@@ -68,17 +68,15 @@ export default function CategoryPostsPage() {
       </div>
 
       <div className="mb-8 fade-in-up">
-        <div className="mb-4 flex items-center space-x-3">
+        <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
           <CategoryIcon
             category={category}
-            className="h-7 w-7 text-neutral-500 dark:text-neutral-400"
+            className="h-7 w-7 shrink-0 text-neutral-500 dark:text-neutral-400"
           />
-          <div>
-            <h1 className="text-2xl font-bold">{category}</h1>
-            <p className="text-muted-foreground">
-              $ find ./posts -category {category} | wc -l = {count}
-            </p>
-          </div>
+          <h1 className="text-2xl font-bold">{category}</h1>
+          <p className="text-muted-foreground">
+            $ find ./posts -category {category} | wc -l = {count}
+          </p>
         </div>
       </div>
 
