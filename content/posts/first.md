@@ -6,7 +6,7 @@ tags:
   - Java
   - NextJS
 description: 文章摘要
-cover:
+cover: 
 published: true
 ---
-测试同步插件的正文
+测试同步插件的，可能图片太大了
