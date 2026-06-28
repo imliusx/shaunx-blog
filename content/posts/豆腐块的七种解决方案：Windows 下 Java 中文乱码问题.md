@@ -9,7 +9,7 @@ tags:
   - Windows
   - UTF-8
   - 解决方案
-description: 在Windows系统运行Java程序时，控制台输出/文件读写常出现中文乱码。这是由于Windows默认使用GBK编码，而现代Java项目多采用UTF-8编码所致。本文提供7种解决方案，覆盖命令行程序、IDE开发、服务部署等场景，适用于Windows 7/10/11全系版本。
+description: 在 Windows 系统运行 Java 程序时，控制台输出/文件读写常出现中文乱码。这是由于 Windows 默认使用 GBK 编码，而现代 Java 项目多采用 UTF-8 编码所致。本文提供 7 种解决方案，覆盖命令行程序、IDE 开发、服务部署等场景，适用于 Windows 7/10/11 全系版本。
 cover:
 published: true
 ---
