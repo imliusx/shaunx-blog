@@ -18,6 +18,8 @@
   body {
     @apply bg-neutral-50 text-neutral-900;
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
     font-weight: 400;
     line-height: 1.6;
     letter-spacing: 0.02em;
@@ -52,11 +54,15 @@
   code {
     @apply bg-neutral-100 text-neutral-800 px-1.5 py-0.5 rounded text-sm;
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
   }
   
   pre {
     @apply bg-neutral-100 border border-neutral-200 rounded-md p-4 overflow-x-auto my-6;
     font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
   }
   
   pre code {
@@ -366,6 +372,43 @@
   font-family: var(--font-mono);
 }
 
+.prose .link-preview-card {
+  @apply my-5 flex overflow-hidden rounded-lg border border-neutral-300 bg-neutral-50 text-neutral-900 transition-colors hover:border-neutral-400 hover:bg-neutral-100;
+  background-image: none;
+}
+
+.prose .link-preview-content {
+  @apply min-w-0 flex-1 p-3;
+}
+
+.prose .link-preview-title {
+  @apply mb-1.5 line-clamp-2 text-sm font-medium leading-snug text-neutral-900;
+}
+
+.prose .link-preview-description {
+  @apply mb-3 line-clamp-2 text-xs leading-relaxed text-neutral-600;
+}
+
+.prose .link-preview-url {
+  @apply flex min-w-0 items-center gap-2 text-xs font-medium text-neutral-700;
+}
+
+.prose .link-preview-favicon {
+  @apply my-0 h-4 w-4 shrink-0 rounded-none;
+}
+
+.prose .link-preview-url span {
+  @apply truncate;
+}
+
+.prose .link-preview-media {
+  @apply order-first hidden w-[12.5rem] shrink-0 border-r border-neutral-300 bg-neutral-100 sm:block;
+}
+
+.prose .link-preview-media img {
+  @apply my-0 h-full w-full rounded-none object-cover;
+}
+
 .prose .table-scroll {
   @apply my-6 max-w-full overflow-x-auto rounded-lg border border-neutral-300;
 }
@@ -452,6 +495,26 @@
   font-family: var(--font-mono);
 }
 
+.dark .prose .link-preview-card {
+  @apply border-neutral-800 bg-neutral-900 text-neutral-100 hover:border-neutral-700 hover:bg-neutral-800;
+}
+
+.dark .prose .link-preview-title {
+  @apply text-neutral-100;
+}
+
+.dark .prose .link-preview-description {
+  @apply text-neutral-400;
+}
+
+.dark .prose .link-preview-url {
+  @apply text-neutral-300;
+}
+
+.dark .prose .link-preview-media {
+  @apply border-neutral-800 bg-neutral-800;
+}
+
 .dark .prose thead {
   @apply bg-neutral-800/80 text-neutral-300;
 }
@@ -513,6 +576,8 @@
   @apply text-neutral-900 rounded-lg my-6;
   background: #f5f5f5;
   font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
   font-size: 0.875rem;
   line-height: 1.7;
   tab-size: 2;
@@ -532,6 +597,8 @@
 /* 代码内容区域 - 可滚动 */
 .prose pre[class*="language-"] code {
   display: block;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
   padding: 1rem 1.5rem;
   overflow-x: auto;
   max-height: 600px; /* 设置最大高度 */
@@ -627,6 +694,8 @@
 .prose code[class*="language-"] {
   @apply text-neutral-900;
   font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
   font-size: 0.875rem;
   line-height: 1.7;
   tab-size: 2;
@@ -856,6 +925,8 @@
 .prose :not(pre) > code {
   @apply bg-neutral-100 text-neutral-800 px-1.5 py-0.5 rounded text-sm;
   font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 

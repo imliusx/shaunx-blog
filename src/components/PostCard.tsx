@@ -15,11 +15,11 @@ export function PostCard({ post }: PostCardProps) {
   const postHref = `/posts/${encodeSlug(post.slug)}` as any;
 
   return (
-    <article className="card transition-all duration-200 hover:shadow-md overflow-hidden md:h-48">
+    <article className="card transition-all duration-200 hover:shadow-md overflow-hidden md:min-h-48">
       <div className="flex h-full flex-col md:flex-row">
         {/* 封面图片区域 */}
         {post.cover && (
-          <div className="relative h-48 w-full flex-shrink-0 md:h-full md:w-64">
+          <div className="relative h-48 w-full flex-shrink-0 md:min-h-48 md:w-64">
             <Image
               src={post.cover}
               alt={post.title}
@@ -31,11 +31,11 @@ export function PostCard({ post }: PostCardProps) {
         
         {/* 内容区域 */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col px-6 py-5">
-          <div className="min-w-0 flex-1 overflow-hidden">
-            <h3 className="mb-2 min-w-0 overflow-hidden text-xl font-semibold leading-snug">
+          <div className="min-w-0 flex-1 overflow-visible">
+            <h3 className="mb-2 min-w-0 text-xl font-semibold leading-snug">
               <Link 
                 href={postHref}
-                className="block overflow-hidden whitespace-nowrap pb-1 text-neutral-900 [mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] dark:text-neutral-100"
+                className="inline break-words pb-1 text-neutral-900 dark:text-neutral-100"
               >
                 {post.title}
               </Link>

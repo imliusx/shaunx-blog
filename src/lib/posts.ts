@@ -21,6 +21,7 @@ interface HastNode {
   tagName?: string;
   properties?: Record<string, unknown>;
   children?: HastNode[];
+  value?: string;
 }
 
 function rehypeWrapTables() {
@@ -44,6 +45,303 @@ function rehypeWrapTables() {
     };
 
     wrapTables(tree);
+  };
+}
+
+interface LinkPreviewMetadata {
+  url: string;
+  displayUrl: string;
+  title: string;
+  description?: string;
+  image?: string;
+  favicon?: string;
+}
+
+const linkPreviewCache = new Map<string, Promise<LinkPreviewMetadata>>();
+
+function getStringProperty(value: unknown): string | undefined {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value) && typeof value[0] === 'string') return value[0];
+  return undefined;
+}
+
+function isPublicHttpUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) return false;
+
+    const hostname = parsedUrl.hostname.toLowerCase();
+    if (
+      hostname === 'localhost' ||
+      hostname.endsWith('.local') ||
+      hostname.startsWith('127.') ||
+      hostname.startsWith('10.') ||
+      hostname.startsWith('192.168.') ||
+      hostname === '0.0.0.0'
+    ) {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .trim();
+}
+
+function parseAttributes(markup: string): Record<string, string> {
+  const attributes: Record<string, string> = {};
+  const attributePattern = /([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = attributePattern.exec(markup)) !== null) {
+    attributes[match[1].toLowerCase()] = decodeHtmlEntities(match[2] ?? match[3] ?? match[4] ?? '');
+  }
+
+  return attributes;
+}
+
+function getMetaContent(html: string, keys: string[]): string | undefined {
+  const metaPattern = /<meta\b([^>]*)>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = metaPattern.exec(html)) !== null) {
+    const attributes = parseAttributes(match[1]);
+    const key = attributes.property || attributes.name || attributes.itemprop;
+
+    if (key && keys.includes(key.toLowerCase()) && attributes.content) {
+      return attributes.content;
+    }
+  }
+
+  return undefined;
+}
+
+function getTitleContent(html: string): string | undefined {
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  return titleMatch ? decodeHtmlEntities(titleMatch[1].replace(/\s+/g, ' ')) : undefined;
+}
+
+function getFaviconUrl(html: string, pageUrl: string): string | undefined {
+  const linkPattern = /<link\b([^>]*)>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = linkPattern.exec(html)) !== null) {
+    const attributes = parseAttributes(match[1]);
+    const rel = attributes.rel?.toLowerCase();
+
+    if (rel?.includes('icon') && attributes.href) {
+      return new URL(attributes.href, pageUrl).toString();
+    }
+  }
+
+  return undefined;
+}
+
+async function fetchWithTimeout(url: string, timeoutMs = 3500): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; ShaunxBlogLinkPreview/1.0)',
+      },
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+async function getLinkPreviewMetadata(url: string, fallbackTitle?: string): Promise<LinkPreviewMetadata> {
+  if (linkPreviewCache.has(url)) {
+    return linkPreviewCache.get(url)!;
+  }
+
+  const metadataPromise = (async () => {
+    const parsedUrl = new URL(url);
+    const displayUrl = `${parsedUrl.hostname}${parsedUrl.pathname === '/' ? '' : parsedUrl.pathname}`;
+    const fallbackMetadata = {
+      url,
+      displayUrl,
+      title: fallbackTitle && fallbackTitle !== url ? fallbackTitle : displayUrl,
+    };
+
+    try {
+      const response = await fetchWithTimeout(url);
+      const contentType = response.headers.get('content-type') || '';
+
+      if (!response.ok || !contentType.includes('text/html')) {
+        return fallbackMetadata;
+      }
+
+      const html = (await response.text()).slice(0, 200_000);
+      const title =
+        getMetaContent(html, ['og:title', 'twitter:title']) ||
+        getTitleContent(html) ||
+        fallbackMetadata.title;
+      const description = getMetaContent(html, ['og:description', 'twitter:description', 'description']);
+      const image = getMetaContent(html, ['og:image', 'twitter:image']);
+      const favicon = getFaviconUrl(html, url) || new URL('/favicon.ico', url).toString();
+
+      return {
+        ...fallbackMetadata,
+        title,
+        description,
+        image: image ? new URL(image, url).toString() : undefined,
+        favicon,
+      };
+    } catch {
+      return fallbackMetadata;
+    }
+  })();
+
+  linkPreviewCache.set(url, metadataPromise);
+  return metadataPromise;
+}
+
+function isWhitespaceTextNode(node: HastNode): boolean {
+  return node.type === 'text' && !node.value?.trim();
+}
+
+function getStandaloneLink(node: HastNode): HastNode | null {
+  if (node.type !== 'element' || node.tagName !== 'p' || !node.children) return null;
+
+  const meaningfulChildren = node.children.filter(child => !isWhitespaceTextNode(child));
+  if (meaningfulChildren.length !== 1) return null;
+
+  const [child] = meaningfulChildren;
+  if (child.type !== 'element' || child.tagName !== 'a') return null;
+
+  const href = getStringProperty(child.properties?.href);
+  return href && isPublicHttpUrl(href) ? child : null;
+}
+
+function getNodeText(node: HastNode): string {
+  if (node.type === 'text') return node.value || '';
+  return node.children?.map(getNodeText).join('') || '';
+}
+
+function createTextNode(value: string): HastNode {
+  return { type: 'text', value };
+}
+
+function createLinkPreviewNode(metadata: LinkPreviewMetadata): HastNode {
+  const children: HastNode[] = [
+    {
+      type: 'element',
+      tagName: 'div',
+      properties: { className: ['link-preview-content'] },
+      children: [
+        {
+          type: 'element',
+          tagName: 'div',
+          properties: { className: ['link-preview-title'] },
+          children: [createTextNode(metadata.title)],
+        },
+        ...(metadata.description
+          ? [{
+              type: 'element',
+              tagName: 'p',
+              properties: { className: ['link-preview-description'] },
+              children: [createTextNode(metadata.description)],
+            } as HastNode]
+          : []),
+        {
+          type: 'element',
+          tagName: 'div',
+          properties: { className: ['link-preview-url'] },
+          children: [
+            ...(metadata.favicon
+              ? [{
+                  type: 'element',
+                  tagName: 'img',
+                  properties: {
+                    className: ['link-preview-favicon'],
+                    src: metadata.favicon,
+                    alt: '',
+                    loading: 'lazy',
+                  },
+                  children: [],
+                } as HastNode]
+              : []),
+            {
+              type: 'element',
+              tagName: 'span',
+              children: [createTextNode(metadata.displayUrl)],
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  if (metadata.image) {
+    children.push({
+      type: 'element',
+      tagName: 'div',
+      properties: { className: ['link-preview-media'] },
+      children: [{
+        type: 'element',
+        tagName: 'img',
+        properties: {
+          src: metadata.image,
+          alt: '',
+          loading: 'lazy',
+        },
+        children: [],
+      }],
+    });
+  }
+
+  return {
+    type: 'element',
+    tagName: 'a',
+    properties: {
+      className: ['link-preview-card', 'no-link-underline'],
+      href: metadata.url,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+    },
+    children,
+  };
+}
+
+function rehypeLinkPreviews() {
+  return async (tree: HastNode) => {
+    const transform = async (node: HastNode): Promise<void> => {
+      if (!node.children) return;
+
+      const nextChildren: HastNode[] = [];
+
+      for (const child of node.children) {
+        const standaloneLink = getStandaloneLink(child);
+
+        if (standaloneLink) {
+          const href = getStringProperty(standaloneLink.properties?.href)!;
+          const metadata = await getLinkPreviewMetadata(href, getNodeText(standaloneLink));
+          nextChildren.push(createLinkPreviewNode(metadata));
+          continue;
+        }
+
+        await transform(child);
+        nextChildren.push(child);
+      }
+
+      node.children = nextChildren;
+    };
+
+    await transform(tree);
   };
 }
 
@@ -270,6 +568,7 @@ export async function markdownToHtml(markdown: string): Promise<string> {
       lineNumbersStyle: true
     })
     .use(rehypeWrapTables)
+    .use(rehypeLinkPreviews)
     .use(rehypeStringify)
     .process(remarkResult.toString());
     
