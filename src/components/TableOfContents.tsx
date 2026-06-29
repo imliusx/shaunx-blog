@@ -114,7 +114,7 @@ const SidebarTOC: React.FC<TableOfContentsProps> = ({
   return (
     <div className={cn("w-full", className)}>
       <div className="mb-4">
-        <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+        <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
           目录
         </h3>
         {showProgress && (
