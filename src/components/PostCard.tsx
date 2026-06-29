@@ -32,10 +32,10 @@ export function PostCard({ post }: PostCardProps) {
         {/* 内容区域 */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col px-6 py-5">
           <div className="min-w-0 flex-1 overflow-hidden">
-            <h3 className="text-xl font-semibold mb-2 line-clamp-2 leading-snug">
+            <h3 className="mb-2 min-w-0 overflow-hidden text-xl font-semibold leading-snug">
               <Link 
                 href={postHref}
-                className="inline-block pb-1 text-neutral-900 dark:text-neutral-100"
+                className="block overflow-hidden whitespace-nowrap pb-1 text-neutral-900 [mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] dark:text-neutral-100"
               >
                 {post.title}
               </Link>
