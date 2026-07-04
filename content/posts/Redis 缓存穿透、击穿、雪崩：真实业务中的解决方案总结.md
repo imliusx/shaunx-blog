@@ -9,14 +9,14 @@ tags:
   - 高并发
   - 架构设计
   - 后端开发
-description: Redis 是后端系统中最常用的缓存组件之一，但在高并发场景下，缓存穿透、缓存击穿和缓存雪崩很容易把请求压力直接打到数据库。本文结合真实业务场景，整理三类缓存问题的产生原因、典型表现、解决方案和落地注意事项。
+description: Redis 是后端系统中最常用的缓存组件之一，但在高并发场景下，缓存穿透、缓存击穿和缓存雪崩很容易把请求压力直接打到数据库。内容结合真实业务场景，整理三类缓存问题的产生原因、典型表现、解决方案和落地注意事项。
 cover:
 published: true
 ---
 
 ## 引言
 
-Redis 在后端系统中非常常见，登录态、热点数据、排行榜、分布式锁、限流计数、接口结果缓存，都可能用到它。
+Redis 在后端系统中非常常见，登录态、热点数据、排行榜、分布式锁、限流计数、接口结果缓存，都可能用到它。Redis 官方文档可以查看：[Redis Documentation](https://redis.io/docs/latest/)，常用命令可以查看：[Redis Commands](https://redis.io/docs/latest/commands/)。
 
 很多接口刚开始只查数据库也没问题，但数据量和访问量上来后，数据库压力会明显增加。此时加一层 Redis 缓存，通常能把大部分读请求挡在数据库之前。
 
@@ -511,13 +511,15 @@ public class CacheWarmUpRunner implements ApplicationRunner {
 
 常见工具包括：
 
-- Sentinel；
-- Resilience4j；
+- [Sentinel](https://github.com/alibaba/Sentinel/wiki)；
+- [Resilience4j](https://resilience4j.readme.io/docs)；
 - Hystrix（维护模式，不建议新项目优先使用）。
 
 ### 解决方案五：Redis 高可用
 
 如果 Redis 本身不可用，业务缓存层就会失效。因此生产环境通常需要 Redis 高可用方案。
+
+Redis 集群相关能力可以查看官方文档：[Redis Clustering](https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/)。
 
 常见方案：
 
