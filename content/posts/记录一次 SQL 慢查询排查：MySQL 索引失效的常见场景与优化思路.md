@@ -9,7 +9,7 @@ tags:
   - 索引
   - 慢查询
   - 后端开发
-description: 本文从一次真实业务中的慢 SQL 排查过程出发，梳理 MySQL 索引失效的常见场景，包括函数计算、隐式类型转换、like 前缀模糊查询、联合索引使用不当、范围查询、OR 条件等，并总结后端开发中常用的 SQL 优化思路。
+description: 本记录一次慢 SQL 排查过程，梳理 MySQL 索引失效的常见场景，包括函数计算、隐式类型转换、like 前缀模糊查询、联合索引使用不当、范围查询、OR 条件等，并总结后端开发中常用的 SQL 优化思路。
 cover:
 published: true
 ---
@@ -88,6 +88,10 @@ LIMIT 0, 20;
 ```
 
 重点关注几个字段：
+
+> 图片占位：这里可以补充一张 `EXPLAIN` 执行计划截图，标注 `type`、`key`、`rows`、`Extra` 等关键字段。
+
+![](images/2026/07/04/mysql-explain-plan-placeholder.png)
 
 | 字段 | 含义 |
 | --- | --- |
@@ -526,6 +530,10 @@ SHOW INDEX FROM t_order;
 
 ## 常见索引失效场景总结
 
+> 图片占位：这里可以补充一张“MySQL 索引失效常见场景”思维导图，方便读者快速回顾。
+
+![](images/2026/07/04/mysql-index-failure-summary-placeholder.png)
+
 | 场景 | 示例 | 优化建议 |
 | --- | --- | --- |
 | 索引列使用函数 | `DATE(create_time)` | 改为时间范围查询 |
@@ -583,6 +591,13 @@ LIMIT 0, 20;
 ```
 
 接口响应时间从秒级下降到几十毫秒级。虽然这不是多复杂的问题，但很典型：索引已经建了，不代表 SQL 一定会正确使用索引。
+
+## 参考链接
+
+- [MySQL 8.4 Reference Manual: EXPLAIN Statement](https://dev.mysql.com/doc/refman/8.4/en/explain.html)
+- [MySQL 8.4 Reference Manual: Optimization and Indexes](https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html)
+- [MySQL 8.4 Reference Manual: The Slow Query Log](https://dev.mysql.com/doc/refman/8.4/en/slow-query-log.html)
+- [MySQL 8.4 Reference Manual: InnoDB Indexes](https://dev.mysql.com/doc/refman/8.4/en/innodb-indexes.html)
 
 ## 总结
 
