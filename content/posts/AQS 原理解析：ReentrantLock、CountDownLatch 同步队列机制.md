@@ -1,5 +1,5 @@
 ---
-title: AQS 原理解析：ReentrantLock、CountDownLatch 背后的同步队列机制
+title: AQS 原理解析：ReentrantLock、CountDownLatch 同步队列
 slug: java-aqs-reentrantlock-countdownlatch-principle
 date: 2026-07-04
 category: 原理
