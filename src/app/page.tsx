@@ -42,7 +42,7 @@ export default function HomePage() {
         </div>
 
         <div className="h-7 w-40 mx-auto mt-7 shimmer rounded md:mt-10" />
-        <div className="mt-6 grid w-full max-w-md grid-cols-2 gap-x-4 gap-y-2 border-y border-neutral-200 py-2 dark:border-neutral-800 md:max-w-xl">
+        <div className="mt-6 grid w-full max-w-md grid-flow-col grid-rows-4 auto-cols-fr gap-x-4 gap-y-2 border-y border-neutral-200 py-2 dark:border-neutral-800 md:max-w-xl">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="h-5 shimmer rounded" />
           ))}
@@ -96,7 +96,7 @@ export default function HomePage() {
             <span aria-hidden="true">$ </span>
             ls ./categories
           </div>
-          <div className="grid grid-cols-2 gap-x-5 gap-y-1 border-y border-neutral-300 py-3 dark:border-neutral-700 md:gap-x-10">
+          <div className="grid grid-flow-col grid-rows-4 auto-cols-fr gap-x-5 gap-y-1 border-y border-neutral-300 py-3 dark:border-neutral-700 md:gap-x-10">
             {POST_CATEGORIES.map(category => (
               <Link
                 key={category}

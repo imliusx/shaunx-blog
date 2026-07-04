@@ -1,11 +1,11 @@
 export const POST_CATEGORIES = [
+  '项目',
   '架构',
-  '开发',
   '原理',
-  'AI栈',
   '运维',
+  '开发',
+  'AI栈',
   '工具',
-  '硬件',
   '随笔',
 ] as const;
 

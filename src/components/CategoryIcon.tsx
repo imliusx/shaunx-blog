@@ -1,6 +1,6 @@
 import {
   Bot,
-  Cpu,
+  FolderKanban,
   Hammer,
   Lightbulb,
   Network,
@@ -23,7 +23,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   'AI栈': Bot,
   '运维': ServerCog,
   '工具': Hammer,
-  '硬件': Cpu,
+  '项目': FolderKanban,
   '随笔': PenLine,
 };
 
