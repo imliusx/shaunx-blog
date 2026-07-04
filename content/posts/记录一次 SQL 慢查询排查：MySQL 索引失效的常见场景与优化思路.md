@@ -74,7 +74,7 @@ KEY idx_status_create_time (status, create_time)
 
 ## 第一步：先看执行计划
 
-排查 SQL 性能问题，不要凭感觉猜，第一步应该先看执行计划。
+排查 SQL 性能问题，不要凭感觉猜，第一步应该先看执行计划。MySQL 官方文档对 `EXPLAIN` 的说明可以查看：[EXPLAIN Statement](https://dev.mysql.com/doc/refman/8.4/en/explain.html)。
 
 ```sql
 EXPLAIN
@@ -452,7 +452,7 @@ LIMIT 20;
 
 先通过日志、APM 或慢查询日志确认到底是哪条 SQL 慢。
 
-开启慢查询日志可以参考：
+开启慢查询日志可以参考 MySQL 官方文档：[The Slow Query Log](https://dev.mysql.com/doc/refman/8.4/en/slow-query-log.html)。
 
 ```sql
 SHOW VARIABLES LIKE 'slow_query_log';
