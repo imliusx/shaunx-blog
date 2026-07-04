@@ -54,9 +54,9 @@ java.lang.OutOfMemoryError: Java heap space
 
 初步判断：这是一个堆内存溢出问题，并且和订单导出逻辑有关。
 
-图：JVM OOM 排查流程
+图：JVM 运行时内存结构图
 
-![](images/2026/07/04/jvm-oom-troubleshooting-flow-placeholder.png)
+![](images/2026/07/04/jvm-runtime-memory-structure-placeholder.png)
 
 ## 常见 OOM 类型
 
@@ -274,9 +274,9 @@ jstat -gcutil <pid> 1000 10
 
 如果老年代使用率持续升高，Full GC 后也降不下来，大概率存在对象长期存活或内存泄漏。
 
-图：JVM 堆内存变化趋势
+图：jstat 老年代使用率变化截图
 
-![](images/2026/07/04/jvm-heap-memory-trend-placeholder.png)
+![](images/2026/07/04/jstat-old-generation-usage-placeholder.png)
 
 ## 第四步：分析堆转储
 
@@ -577,9 +577,9 @@ GC 日志重点关注：
 
 如果 Full GC 后老年代仍然很高，说明大量对象仍然被引用，不能释放。
 
-图：GC 日志分析要点
+图：Full GC 日志片段截图
 
-![](images/2026/07/04/jvm-gc-log-analysis-placeholder.png)
+![](images/2026/07/04/full-gc-log-snippet-placeholder.png)
 
 ## JVM 参数不是万能解法
 
@@ -752,9 +752,9 @@ OOM 发生在线上时，要先恢复服务，再保留证据。
 - 磁盘是否有空间保存 dump？
 - 监控中内存曲线是否异常？
 
-图：JVM OOM 排查清单
+图：Kubernetes OOMKilled 事件截图
 
-![](images/2026/07/04/jvm-oom-checklist-placeholder.png)
+![](images/2026/07/04/kubernetes-oomkilled-event-placeholder.png)
 
 ## 总结
 
