@@ -105,9 +105,9 @@ main 方法
 -> 应用启动完成
 ```
 
-图：Spring Boot 启动流程
+图：SpringBootApplication 注解源码截图
 
-![](images/2026/07/04/spring-boot-startup-flow-placeholder.png)
+![](images/2026/07/04/springbootapplication-source-placeholder.png)
 
 ## @SpringBootApplication 做了什么？
 
@@ -247,9 +247,9 @@ public class DemoApplication {
 -> 配置类中的 @Bean 生效
 ```
 
-图：Spring Boot 自动装配核心流程
+图：AutoConfiguration.imports 文件内容截图
 
-![](images/2026/07/04/spring-boot-auto-configuration-flow-placeholder.png)
+![](images/2026/07/04/spring-boot-auto-configuration-imports-placeholder.png)
 
 ## 自动配置类从哪里来？
 
@@ -428,9 +428,9 @@ Spring 容器启动过程中，大致会经历下面几个阶段：
 -> 应用启动完成
 ```
 
-图：Spring Bean 生命周期
+图：BeanPostProcessor 调用位置示意图
 
-![](images/2026/07/04/spring-bean-lifecycle-placeholder.png)
+![](images/2026/07/04/spring-beanpostprocessor-placeholder.png)
 
 ### 1. 读取配置来源
 
