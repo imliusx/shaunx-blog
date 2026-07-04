@@ -89,7 +89,7 @@ LIMIT 0, 20;
 
 重点关注几个字段：
 
-> 图片占位：这里可以补充一张 `EXPLAIN` 执行计划截图，标注 `type`、`key`、`rows`、`Extra` 等关键字段。
+图：MySQL EXPLAIN 执行计划
 
 ![](images/2026/07/04/mysql-explain-plan-placeholder.png)
 
@@ -530,7 +530,7 @@ SHOW INDEX FROM t_order;
 
 ## 常见索引失效场景总结
 
-> 图片占位：这里可以补充一张“MySQL 索引失效常见场景”思维导图，方便读者快速回顾。
+图：MySQL 索引失效常见场景
 
 ![](images/2026/07/04/mysql-index-failure-summary-placeholder.png)
 
@@ -591,13 +591,6 @@ LIMIT 0, 20;
 ```
 
 接口响应时间从秒级下降到几十毫秒级。虽然这不是多复杂的问题，但很典型：索引已经建了，不代表 SQL 一定会正确使用索引。
-
-## 参考链接
-
-- [MySQL 8.4 Reference Manual: EXPLAIN Statement](https://dev.mysql.com/doc/refman/8.4/en/explain.html)
-- [MySQL 8.4 Reference Manual: Optimization and Indexes](https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html)
-- [MySQL 8.4 Reference Manual: The Slow Query Log](https://dev.mysql.com/doc/refman/8.4/en/slow-query-log.html)
-- [MySQL 8.4 Reference Manual: InnoDB Indexes](https://dev.mysql.com/doc/refman/8.4/en/innodb-indexes.html)
 
 ## 总结
 
