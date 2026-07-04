@@ -530,9 +530,9 @@ SHOW INDEX FROM t_order;
 
 ## 常见索引失效场景总结
 
-图：MySQL 索引失效常见场景
+图：MySQL 联合索引最左前缀示意图
 
-![](images/2026/07/04/mysql-index-failure-summary-placeholder.png)
+![](images/2026/07/04/mysql-leftmost-prefix-index-placeholder.png)
 
 | 场景 | 示例 | 优化建议 |
 | --- | --- | --- |
