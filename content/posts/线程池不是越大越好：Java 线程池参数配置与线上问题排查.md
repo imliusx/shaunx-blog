@@ -59,9 +59,9 @@ new Thread(() -> {
 复用线程 -> 控制并发 -> 管理任务 -> 降低资源开销 -> 提升系统稳定性
 ```
 
-图：线程池任务处理模型
+图：ThreadPoolExecutor 核心参数示意图
 
-![](images/2026/07/04/java-thread-pool-task-flow-placeholder.png)
+![](images/2026/07/04/threadpoolexecutor-core-parameters-placeholder.png)
 
 ## ThreadPoolExecutor 核心参数
 
@@ -193,9 +193,9 @@ public class NamedThreadFactory implements ThreadFactory {
 -> 仍无法处理，触发拒绝策略
 ```
 
-图：ThreadPoolExecutor 执行流程
+图：ThreadPoolExecutor execute 方法源码截图
 
-![](images/2026/07/04/thread-pool-execution-flow-placeholder.png)
+![](images/2026/07/04/threadpoolexecutor-execute-source-placeholder.png)
 
 很多线程池问题，都是因为没有理解这个流程。
 
@@ -632,9 +632,9 @@ jstack <pid> | grep -A 30 <十六进制线程ID>
 
 这样可以定位是哪个线程在消耗 CPU。
 
-图：线程池 CPU 飙高排查链路
+图：top -Hp 与 jstack 定位高 CPU 线程截图
 
-![](images/2026/07/04/thread-pool-high-cpu-troubleshooting-placeholder.png)
+![](images/2026/07/04/top-jstack-high-cpu-thread-placeholder.png)
 
 ## 线上问题三：内存溢出
 
@@ -779,9 +779,9 @@ public void asyncHandleOrder(Long orderId) {
 
 如果项目使用 [Micrometer](https://docs.micrometer.io/micrometer/reference/)，可以把线程池指标接入 Prometheus 和 Grafana。
 
-图：线程池监控面板
+图：线程池 activeCount 与 queueSize 监控面板
 
-![](images/2026/07/04/thread-pool-monitor-dashboard-placeholder.png)
+![](images/2026/07/04/thread-pool-active-queue-monitor-placeholder.png)
 
 ## 线程池使用规范
 
