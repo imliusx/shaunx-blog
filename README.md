@@ -216,6 +216,6 @@ shaunx-blog/
 └── tailwind.config.ts
 ```
 
-## 原作者链接
+## 原项目链接
 
 [FT-Fetters/tiny-blog-open](https://github.com/FT-Fetters/tiny-blog-open)
