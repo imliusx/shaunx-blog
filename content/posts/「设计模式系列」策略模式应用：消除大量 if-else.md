@@ -2,7 +2,7 @@
 title: 「设计模式系列」策略模式应用：消除大量 if-else
 slug: design-pattern-strategy-remove-if-else
 date: 2026-07-05
-category: 开发
+category: 架构
 tags:
   - 设计模式
   - 策略模式
