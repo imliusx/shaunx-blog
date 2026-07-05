@@ -2,7 +2,7 @@
 title: Netty 入门实战：基于 TCP 实现一个简单的自定义通信协议
 slug: netty-tcp-custom-protocol-practice
 date: 2026-06-04
-category: 项目
+category: 开发
 tags:
   - Netty
   - TCP
