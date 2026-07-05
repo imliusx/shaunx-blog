@@ -2,7 +2,7 @@
 title: MCP 入门理解：大模型如何通过工具调用连接外部系统
 slug: mcp-tool-calling-external-system-introduction
 date: 2026-07-05
-category: 架构
+category: AI栈
 tags:
   - MCP
   - AI
