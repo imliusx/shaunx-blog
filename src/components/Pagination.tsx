@@ -19,6 +19,17 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
     return `${basePath}${separator}page=${page}`;
   };
 
+  const getPageLinkClassName = (page: number) =>
+    cn(
+      'no-link-underline inline-flex h-9 min-w-9 items-center justify-center border px-3',
+      'font-mono text-sm font-medium leading-none transition-colors',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900',
+      'focus-visible:ring-offset-2 dark:focus-visible:ring-neutral-100',
+      currentPage === page
+        ? 'border-neutral-900 bg-neutral-900 text-neutral-50 shadow-sm hover:text-neutral-50 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:text-neutral-900'
+        : 'border-transparent text-neutral-500 hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
+    );
+
   const renderPageNumbers = () => {
     const pages = [];
     const showPages = 5; // 显示的页码数量
@@ -36,13 +47,8 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
         <Link
           key={1}
           href={generatePageUrl(1) as any}
-          className={cn(
-            'px-3 py-2 text-sm rounded-none transition-colors',
-            'hover:bg-accent hover:text-accent-foreground',
-            currentPage === 1
-              ? 'bg-primary text-primary-foreground'
-              : 'text-muted-foreground'
-          )}
+          className={getPageLinkClassName(1)}
+          aria-current={currentPage === 1 ? 'page' : undefined}
         >
           1
         </Link>
@@ -50,7 +56,10 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
 
       if (startPage > 2) {
         pages.push(
-          <span key="ellipsis1" className="px-2 py-2 text-sm text-muted-foreground">
+          <span
+            key="ellipsis1"
+            className="inline-flex h-9 min-w-6 items-center justify-center text-sm text-neutral-400 dark:text-neutral-600"
+          >
             ...
           </span>
         );
@@ -63,13 +72,8 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
         <Link
           key={i}
           href={generatePageUrl(i) as any}
-          className={cn(
-            'px-3 py-2 text-sm rounded-none transition-colors',
-            'hover:bg-accent hover:text-accent-foreground',
-            currentPage === i
-              ? 'bg-primary text-primary-foreground'
-              : 'text-muted-foreground'
-          )}
+          className={getPageLinkClassName(i)}
+          aria-current={currentPage === i ? 'page' : undefined}
         >
           {i}
         </Link>
@@ -80,7 +84,10 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pages.push(
-          <span key="ellipsis2" className="px-2 py-2 text-sm text-muted-foreground">
+          <span
+            key="ellipsis2"
+            className="inline-flex h-9 min-w-6 items-center justify-center text-sm text-neutral-400 dark:text-neutral-600"
+          >
             ...
           </span>
         );
@@ -90,13 +97,8 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
         <Link
           key={totalPages}
           href={generatePageUrl(totalPages) as any}
-          className={cn(
-            'px-3 py-2 text-sm rounded-none transition-colors',
-            'hover:bg-accent hover:text-accent-foreground',
-            currentPage === totalPages
-              ? 'bg-primary text-primary-foreground'
-              : 'text-muted-foreground'
-          )}
+          className={getPageLinkClassName(totalPages)}
+          aria-current={currentPage === totalPages ? 'page' : undefined}
         >
           {totalPages}
         </Link>
@@ -107,33 +109,38 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
   };
 
   return (
-    <nav className="flex items-center justify-center space-x-1 mt-8">
+    <nav
+      className="mt-8 flex flex-wrap items-center justify-center gap-2"
+      aria-label="文章列表分页"
+    >
       <Link
         href={hasPrevPage ? generatePageUrl(currentPage - 1) as any : '#'}
         className={cn(
-          'flex items-center px-3 py-2 text-sm rounded-none transition-colors',
+          'no-link-underline inline-flex h-9 items-center border border-transparent px-3 font-mono text-sm font-medium leading-none transition-colors',
           hasPrevPage
-            ? 'hover:bg-accent hover:text-accent-foreground text-muted-foreground'
-            : 'text-muted-foreground/50 cursor-not-allowed'
+            ? 'text-neutral-500 hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
+            : 'cursor-not-allowed text-neutral-300 dark:text-neutral-700'
         )}
+        aria-disabled={!hasPrevPage}
         {...(!hasPrevPage && { onClick: (e) => e.preventDefault() })}
       >
         <ChevronLeft className="h-4 w-4 mr-1" />
         上一页
       </Link>
 
-      <div className="flex items-center space-x-1 mx-4">
+      <div className="flex items-center gap-1 sm:mx-2">
         {renderPageNumbers()}
       </div>
 
       <Link
         href={hasNextPage ? generatePageUrl(currentPage + 1) as any : '#'}
         className={cn(
-          'flex items-center px-3 py-2 text-sm rounded-none transition-colors',
+          'no-link-underline inline-flex h-9 items-center border border-transparent px-3 font-mono text-sm font-medium leading-none transition-colors',
           hasNextPage
-            ? 'hover:bg-accent hover:text-accent-foreground text-muted-foreground'
-            : 'text-muted-foreground/50 cursor-not-allowed'
+            ? 'text-neutral-500 hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:border-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
+            : 'cursor-not-allowed text-neutral-300 dark:text-neutral-700'
         )}
+        aria-disabled={!hasNextPage}
         {...(!hasNextPage && { onClick: (e) => e.preventDefault() })}
       >
         下一页
