@@ -21,7 +21,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
 
   const getPageLinkClassName = (page: number) =>
     cn(
-      'px-3 py-2 text-sm transition-colors',
+      'inline-flex h-9 min-w-8 shrink-0 items-center justify-center px-2 text-sm transition-colors sm:px-3',
       currentPage === page
         ? 'text-neutral-900 underline decoration-1 underline-offset-4 dark:text-neutral-100'
         : 'text-neutral-500 dark:text-neutral-400'
@@ -55,7 +55,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
         pages.push(
           <span
             key="ellipsis1"
-            className="px-2 py-2 text-sm text-neutral-400 dark:text-neutral-600"
+            className="inline-flex h-9 min-w-5 shrink-0 items-center justify-center px-1 text-sm text-neutral-400 dark:text-neutral-600 sm:px-2"
           >
             ...
           </span>
@@ -83,7 +83,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
         pages.push(
           <span
             key="ellipsis2"
-            className="px-2 py-2 text-sm text-neutral-400 dark:text-neutral-600"
+            className="inline-flex h-9 min-w-5 shrink-0 items-center justify-center px-1 text-sm text-neutral-400 dark:text-neutral-600 sm:px-2"
           >
             ...
           </span>
@@ -106,11 +106,14 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
   };
 
   return (
-    <nav className="flex items-center justify-center space-x-1 mt-8" aria-label="文章列表分页">
+    <nav
+      className="mt-8 flex w-full items-center justify-center overflow-x-auto px-1"
+      aria-label="文章列表分页"
+    >
       <Link
         href={hasPrevPage ? generatePageUrl(currentPage - 1) as any : '#'}
         className={cn(
-          'flex items-center px-3 py-2 text-sm transition-colors',
+          'inline-flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-sm transition-colors sm:px-3',
           hasPrevPage
             ? 'text-neutral-500 dark:text-neutral-400'
             : 'cursor-not-allowed text-neutral-300 dark:text-neutral-700'
@@ -118,18 +121,18 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
         aria-disabled={!hasPrevPage}
         {...(!hasPrevPage && { onClick: (e) => e.preventDefault() })}
       >
-        <ChevronLeft className="h-4 w-4 mr-1" />
+        <ChevronLeft className="mr-1 h-4 w-4 shrink-0" />
         上一页
       </Link>
 
-      <div className="flex items-center space-x-1 mx-4">
+      <div className="mx-1 flex shrink-0 items-center gap-0.5 sm:mx-4 sm:gap-1">
         {renderPageNumbers()}
       </div>
 
       <Link
         href={hasNextPage ? generatePageUrl(currentPage + 1) as any : '#'}
         className={cn(
-          'flex items-center px-3 py-2 text-sm transition-colors',
+          'inline-flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-sm transition-colors sm:px-3',
           hasNextPage
             ? 'text-neutral-500 dark:text-neutral-400'
             : 'cursor-not-allowed text-neutral-300 dark:text-neutral-700'
@@ -138,7 +141,7 @@ export function Pagination({ pagination, basePath = '/posts' }: PaginationProps)
         {...(!hasNextPage && { onClick: (e) => e.preventDefault() })}
       >
         下一页
-        <ChevronRight className="h-4 w-4 ml-1" />
+        <ChevronRight className="ml-1 h-4 w-4 shrink-0" />
       </Link>
     </nav>
   );
