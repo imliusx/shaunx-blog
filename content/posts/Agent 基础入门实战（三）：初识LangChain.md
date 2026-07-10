@@ -1,7 +1,7 @@
 ---
 title: Agent 基础入门实战（三）：初识 LangChain
 slug: agent-basics-practical-guide-03-langchain
-date: 2026-07-10
+date: 2026-03-02
 category: AI栈
 tags:
   - AI
