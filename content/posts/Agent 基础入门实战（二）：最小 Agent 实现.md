@@ -1,7 +1,7 @@
 ---
 title: Agent 基础入门实战（二）：最小 Agent 实现
 slug: agent-basics-practical-guide-02
-date: 2026-07-10
+date: 2026/02/27
 category: AI栈
 tags:
   - AI
