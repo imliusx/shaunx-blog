@@ -1,7 +1,7 @@
 ---
 title: HTTP 协议：从请求响应到连接管理
 slug: http-protocol-request-response-connection-troubleshooting
-date: 2026-07-09
+date: 2025-05-11
 category: 原理
 tags:
   - HTTP
