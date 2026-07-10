@@ -9,7 +9,7 @@ tags:
   - 大模型
   - 工具调用
   - TAO循环
-description: 从 Agent 的定义、核心能力和 TAO 执行循环出发，对比普通 LLM、Workflow 与企业后端服务，并通过工具调用示例帮助初学者建立 Agent 的基础认知。
+description: 从 Agent 的定义、核心能力和 TAO 执行循环出发，对比普通 LLM、Workflow 与企业后端服务，通过工具调用示例建立 Agent 的基础认知。
 cover:
 published: true
 ---
