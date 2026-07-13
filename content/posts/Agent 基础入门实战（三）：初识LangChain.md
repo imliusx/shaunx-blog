@@ -18,7 +18,7 @@ published: true
 
 在前两篇中，我们先理解了 Agent 的核心概念，又使用 Python 和模型 SDK 手写了一个最小 Agent：
 
-- [[posts/Agent 基础入门实战（一）：初始 Agent|Agent 基础入门实战（一）]]
+- [[posts/Agent 基础入门实战（一）：初识 Agent|Agent 基础入门实战（一）]]
 - [[posts/Agent 基础入门实战（二）：最小 Agent 实现|Agent 基础入门实战（二）]]
 
 手写 Agent 的过程让我们看清了工具调用的完整链路：
