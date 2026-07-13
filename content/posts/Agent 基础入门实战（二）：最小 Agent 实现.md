@@ -16,7 +16,7 @@ published: true
 
 ## 前言
 
-在上一篇 [[posts/Agent 基础入门实战（一）：初始 Agent|Agent 基础入门实战（一）]] 中，我们介绍了 Agent 的基本概念，并把它的核心执行过程概括为 TAO 循环：
+在上一篇 [[posts/Agent 基础入门实战（一）：初识 Agent|Agent 基础入门实战（一）]] 中，我们介绍了 Agent 的基本概念，并把它的核心执行过程概括为 TAO 循环：
 
 ```text
 Think（思考） -> Act（行动） -> Observe（观察）
