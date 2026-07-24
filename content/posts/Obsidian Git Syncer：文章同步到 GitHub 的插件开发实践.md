@@ -24,7 +24,16 @@ published: true
 
 为了解决这个问题，我开发了 [Obsidian Git Syncer](https://github.com/imliusx/obsidian-git-syncer)：一个直接运行在 Obsidian 中的 GitHub 内容同步插件。
 
+先看一下最终的效果：
+
+![](images/2026/07/24/img-20260724163159459.png)
+
+
+插件同步中心：
+
 ![](images/2026/07/24/img-20260724162835441.png)
+
+插件侧边栏入口：
 
 ![](images/2026/07/24/img-20260724162835441%201.png)
 
