@@ -9,7 +9,7 @@ tags:
   - Redisson
   - 高并发
   - 后端开发
-description: 从一次活动库存超卖问题说起，梳理 Redis 分布式锁的完整演进过程，包括 SETNX 加锁、过期时间原子性、唯一标识防误删、Lua 脚本释放锁，以及 Redisson 的看门狗续期和可重入实现，最后讨论主从切换下的锁失效问题和业务兜底方案。
+description: 梳理 Redis 分布式锁的完整演进过程，包括 SETNX 加锁、过期时间原子性、唯一标识防误删、Lua 脚本释放锁，以及 Redisson 的看门狗续期和可重入实现，最后讨论主从切换下的锁失效问题和业务兜底方案。
 cover:
 published: true
 ---
