@@ -24,6 +24,10 @@ published: true
 
 为了解决这个问题，我开发了 [Obsidian Git Syncer](https://github.com/imliusx/obsidian-git-syncer)：一个直接运行在 Obsidian 中的 GitHub 内容同步插件。
 
+![](images/2026/07/24/img-20260724162425621.png)
+
+![](images/2026/07/24/img-20260724162502200.png)
+
 它允许我们继续在熟悉的 Vault 中写作，文章完成后打开同步中心，选择文件或目录，就可以把内容发布到 GitHub 仓库固定的 `content/` 目录。
 
 ## 项目解决什么问题
@@ -67,7 +71,8 @@ Next.js、Hugo、Hexo 等博客构建系统
 
 同步中心会同时扫描本地同步目录和 GitHub 仓库中的 `content/` 目录，再按照文件状态分类展示。
 
-![[images/2026/07/13/obsidian-git-syncer-sync-center.png]]
+![](images/2026/07/24/img-20260724162252510.png)
+
 
 顶部汇总区域展示四类状态：
 
@@ -88,7 +93,7 @@ Next.js、Hugo、Hexo 等博客构建系统
 
 插件设置页分为通用设置、GitHub 配置、同步控制、附件处理和调试等区域，并提供搜索功能。
 
-![[images/2026/07/13/obsidian-git-syncer-settings.png]]
+![](images/2026/07/24/img-20260724162314311.png)
 
 GitHub 配置主要包括：
 
