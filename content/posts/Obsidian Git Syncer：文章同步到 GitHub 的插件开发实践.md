@@ -6,7 +6,6 @@ category: 项目
 tags:
   - Obsidian
   - GitHub
-  - TypeScript
   - 插件开发
   - 开源项目
 description: Obsidian Git Syncer 是一个将 Obsidian Vault 中的 Markdown、图片和资源文件同步到 GitHub 仓库 content 目录的插件。本文介绍项目背景、核心功能、同步架构、文件状态判断和 GitHub API 实现。
