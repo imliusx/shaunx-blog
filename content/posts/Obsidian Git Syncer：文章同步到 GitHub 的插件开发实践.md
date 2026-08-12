@@ -1,7 +1,7 @@
 ---
 title: Obsidian Git Syncer：文章同步到 GitHub 的插件开发实践
 slug: obsidian-git-syncer-project-introduction
-date: 2026-07-13
+date: 2026-06-02
 category: 项目
 tags:
   - Obsidian
