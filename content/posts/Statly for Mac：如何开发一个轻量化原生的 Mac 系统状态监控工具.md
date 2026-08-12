@@ -10,7 +10,7 @@ tags:
   - SwiftUI
   - 性能优化
 description: Statly 是一款使用 Swift、AppKit 与 SwiftUI 开发的轻量 macOS 菜单栏系统监控工具。本文从需求背景、架构设计、系统指标采集、状态栏渲染、性能优化到 DMG 发布，复盘它的完整开发过程。
-cover: images/2026/08/12/img-20260812222039287.png
+cover:
 published: true
 ---
 
