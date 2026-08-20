@@ -9,7 +9,7 @@ tags:
   - 并发编程
   - ReentrantLock
   - CountDownLatch
-description: AQS 是 Java 并发包中非常核心的同步器框架，ReentrantLock、CountDownLatch、Semaphore、ReentrantReadWriteLock 等工具都基于它实现。内容围绕 state 状态变量、CLH 同步队列、独占模式、共享模式、线程阻塞唤醒和常见同步器实现思路展开。
+description: AQS 是 Java 并发包中非常核心的同步器框架，ReentrantLock、CountDownLatch、Semaphore、ReentrantReadWriteLock 等工具都基于它实现。介绍一下state 状态变量、CLH 同步队列、独占模式、共享模式、线程阻塞唤醒和常见同步器。
 cover:
 published: true
 ---
