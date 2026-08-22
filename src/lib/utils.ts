@@ -32,3 +32,12 @@ export function slugify(text: string): string {
     .replace(/[\s_-]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
+
+/**
+ * 把配置中的邮箱规范成可点击的mailto链接
+ * 配置里允许填裸邮箱或完整mailto链接，两种都要能正确跳转
+ */
+export function toMailtoHref(email: string): string {
+  const trimmed = email.trim();
+  return trimmed.startsWith('mailto:') ? trimmed : `mailto:${trimmed}`;
+}

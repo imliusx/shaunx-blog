@@ -4,6 +4,7 @@ import { CircleUserRound } from 'lucide-react';
 import { useConfig } from '@/hooks/useConfig';
 import { usePage } from '@/hooks/usePage';
 import { LoadingTransition, SkeletonCard, StaggerContainer } from '@/components/LoadingComponents';
+import { toMailtoHref } from '@/lib/utils';
 
 export default function AboutPage() {
   const { data: config, loading: configLoading } = useConfig();
@@ -74,7 +75,7 @@ export default function AboutPage() {
               <div className="flex flex-wrap gap-4">
                 {config?.social?.email && (
                   <a
-                    href={config.social.email}
+                    href={toMailtoHref(config.social.email)}
                     className="btn-secondary transition-bounce"
                   >
                     邮箱
