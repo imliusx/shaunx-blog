@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Fira_Code } from 'next/font/google';
 import { ConditionalHeader } from '@/components/ConditionalHeader';
+import { FloatingGlyphs } from '@/components/FloatingGlyphs';
 import { Footer } from '@/components/Footer';
 import { getSiteConfigServer } from '@/lib/config';
 import './globals.css';
@@ -83,7 +84,9 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className="dark" suppressHydrationWarning>
       <body className={`${jetbrainsMono.variable} ${firaCode.variable} font-mono antialiased`}>
-        <div className="flex min-h-svh flex-col">
+        {/* 背景装饰层，须排在内容之前并压在 z-0；内容层显式抬到 z-10 */}
+        <FloatingGlyphs />
+        <div className="relative z-10 flex min-h-svh flex-col">
           <ConditionalHeader />
           <main className="flex-1">
             {children}

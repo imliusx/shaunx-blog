@@ -1283,6 +1283,69 @@
   height: 100%;
 }
 
+/* 全站背景装饰：稀疏等宽字符漂浮 */
+.glyph-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  /* 深色底上的浅色字视觉上更弱，透明度略微上调以保持两套主题观感一致 */
+  --glyph-opacity: 0.07;
+}
+
+.dark .glyph-field {
+  --glyph-opacity: 0.09;
+}
+
+/* 文章详情页减淡。必须排在 .dark .glyph-field 之后：
+   两者特异性相同（0,2,0），靠源码顺序决胜，否则暗色模式下减淡不生效 */
+.glyph-field--dim {
+  --glyph-opacity: 0.035;
+}
+
+.dark .glyph-field--dim {
+  --glyph-opacity: 0.045;
+}
+
+.glyph-field__item {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  color: theme('colors.neutral.900');
+  opacity: 0;
+  animation-name: glyphDrift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.dark .glyph-field__item {
+  color: theme('colors.neutral.100');
+}
+
+@keyframes glyphDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: calc(var(--glyph-opacity) * var(--g-scale) * 0.55);
+  }
+  50% {
+    transform: translate3d(var(--g-dx), var(--g-dy), 0);
+    opacity: calc(var(--glyph-opacity) * var(--g-scale));
+  }
+}
+
+/* 尊重系统的减弱动态效果偏好：保留字符纹理，停掉漂移 */
+@media (prefers-reduced-motion: reduce) {
+  .glyph-field__item {
+    animation: none;
+    opacity: calc(var(--glyph-opacity) * var(--g-scale) * 0.8);
+  }
+}
+
 /* Smooth Transition Utilities */
 .transition-smooth {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
