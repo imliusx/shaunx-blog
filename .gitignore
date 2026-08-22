@@ -2,6 +2,11 @@
 node_modules/
 /.pnp
 .pnp.js
+/.pnpm-store/
+
+# 非本项目包管理器的锁文件（项目统一使用 pnpm）
+package-lock.json
+yarn.lock
 
 # 测试
 /coverage
