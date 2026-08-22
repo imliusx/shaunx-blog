@@ -31,7 +31,7 @@ export default function HomePage() {
     <div className={homeContentClass}>
       <section className={homeSectionClass}>
         <div className="mb-6 md:mb-8">
-          <div className="h-16 w-64 mx-auto mb-4 shimmer rounded md:w-96" />
+          <div className="h-14 w-56 mx-auto mb-4 shimmer rounded md:w-80" />
         </div>
         
         <div className="h-6 w-2/3 mx-auto mb-5 shimmer rounded md:mb-8" />
@@ -62,7 +62,7 @@ export default function HomePage() {
             deleteSpeed={80}
             pauseDuration={3000}
             restartPause={1500}
-            className="text-4xl md:text-6xl lg:text-7xl text-neutral-900 dark:text-neutral-100 mb-4"
+            className="text-3xl md:text-5xl lg:text-6xl text-neutral-900 dark:text-neutral-100 mb-4"
           />
         </div>
 
