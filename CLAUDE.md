@@ -63,12 +63,15 @@ curl -X POST http://localhost:3131/api/config/reload \
 ### 管理后台开发
 ```bash
 # 访问管理后台（开发环境）
-# http://localhost:3000/admin?key=你的安全入口码
+# 入口有两个等价形式，都只是「露出登录页」，真正的门是密码：
+#   http://localhost:3000/<secureEntrance>      —— 独立登录页
+#   http://localhost:3000/admin?key=<secureEntrance>
+# secureEntrance 取自 config/site.config.json，缺省时自动生成8位随机串
 
-# 管理员认证测试
+# 管理员认证测试（注意：提交的是 password，不是 secureEntrance）
 curl -X POST http://localhost:3000/api/admin/auth \
   -H "Content-Type: application/json" \
-  -d '{"secureEntrance": "你的安全入口码"}'
+  -d '{"password": "你的ADMIN_PASSWORD"}'
 
 # 验证会话状态
 curl -X GET http://localhost:3000/api/admin/session \
@@ -105,13 +108,22 @@ curl -X GET http://localhost:3000/api/admin/posts \
 - `/api/posts/[slug]`: 单篇文章API，包含HTML内容
 - `/api/tags`: 标签列表API，包含文章计数
 - `/api/tags/[tag]`: 特定标签的文章列表
+- `/api/categories`: 分类列表API，分类枚举定义在`src/lib/categories.ts`（项目/架构/原理/运维/开发/AI栈/工具/随笔）
+- `/api/categories/[category]`: 特定分类的文章列表
 - `/api/pages/[slug]`: 页面内容API（about-me, about-blog等）
+- `/api/rss`: 订阅源，`?format=atom` / `?format=json` 切换格式，实现在`src/lib/feed.ts`
 - `/api/config`: 站点配置API，动态读取配置文件
 - `/api/config/reload`: 配置重载API（Docker环境）
 - `/api/images/[...path]`: 动态图片服务，支持Docker环境的图片访问
 
+> ⚠️ `GET /api/config` 无需认证且返回完整配置对象，**其中包含 `secureEntrance`**。
+> 也就是说隐藏入口地址可被任何人直接读取，它只是障眼法而非访问控制——
+> 真正的访问控制是 `ADMIN_PASSWORD`。改动此接口前请注意：
+> `[slug]/page.tsx`、`ProtectedAdminPage.tsx`、`ConditionalHeader.tsx`、`Footer.tsx`
+> 四处客户端代码都依赖该字段做本地比较，直接删字段会导致后台入口彻底失效。
+
 **🆕 管理后台API路由:**
-- `/api/admin/auth`: 管理员认证，验证安全入口码
+- `/api/admin/auth`: 管理员认证，`POST`校验`ADMIN_PASSWORD`并下发JWT，`DELETE`登出
 - `/api/admin/session`: 会话验证，检查JWT token有效性
 - `/api/admin/posts`: 文章管理API（CRUD操作，需认证）
 - `/api/admin/posts/[slug]`: 单篇文章管理API（需认证）
@@ -154,7 +166,9 @@ curl -X GET http://localhost:3000/api/admin/posts \
 ### 🆕 管理后台系统
 **认证与安全:**
 - JWT (JSON Web Token) 认证机制，使用`jsonwebtoken`库
-- 安全入口码机制：8位随机字符串，防止暴力破解
+- **真正的凭据是`ADMIN_PASSWORD`环境变量**，`src/lib/auth.ts`用定长时间比较校验，防止通过响应耗时试探
+- `JWT_SECRET`和`ADMIN_PASSWORD`均为必填，缺失时抛错而非回退默认值（校验发生在调用时，不影响构建阶段）
+- 安全入口码（`secureEntrance`）：8位随机字符串，作用是不暴露`/admin`路径，属于障眼法而非访问控制（详见上文API路由架构的警告）
 - 基于角色的权限控制（admin角色）
 - 会话管理：自动刷新token，保持登录状态
 
@@ -201,6 +215,13 @@ published: true           # 可选，默认true，设为false为草稿
 
 ### 环境变量
 ```bash
+# —— 必填：缺失时管理后台认证会直接报错，不再回退默认值 ——
+# JWT签名密钥，务必使用足够随机的长字符串
+JWT_SECRET=<用 openssl rand -base64 32 生成>
+# 管理后台登录密码
+ADMIN_PASSWORD=<强密码>
+
+# —— 可选 ——
 # Docker部署端口
 BLOG_PORT=3131
 
@@ -213,13 +234,14 @@ DATA_PATH=./blog-data
 # 用户权限配置（Linux）
 USER_ID=1001
 GROUP_ID=1001
-
-# 站点配置
-SITE_URL=https://your-blog.com
-GITHUB_URL=https://github.com/username
-EMAIL=your@email.com
-TWITTER_URL=https://twitter.com/username
 ```
+
+> ⚠️ 关于 `SITE_URL` / `GITHUB_URL` / `EMAIL` / `TWITTER_URL`：
+> 这几个变量**只在配置文件缺失或解析失败时生效**。
+> `ensureConfigCompleteness()`（`src/lib/config.server.ts`）会把 JSON 里的值浅合并覆盖默认值，
+> 而这些环境变量只参与`getDefaultConfig()`的构造。
+> 只要 `config/site.config.json` 存在且相应字段有值，环境变量就永远不会生效。
+> 要改站点信息，请直接改配置文件或用后台设置页（后者会写回同一个JSON文件）。
 
 ### Docker目录结构
 - 数据目录: `${DATA_PATH}/content` 和 `${DATA_PATH}/config`
@@ -264,6 +286,9 @@ TWITTER_URL=https://twitter.com/username
 - **usePosts**: 文章列表管理，支持分页、搜索、标签过滤
 - **usePost**: 单篇文章获取，包含加载状态管理
 - **useConfig**: 站点配置管理，支持动态重载
+- **usePage**: 独立页面内容获取（about-me / about-blog）
+- **useTags / useCategories**: 标签与分类列表，含文章计数
+- **useTableOfContents**: 文章目录树，配合`src/lib/toc.ts`与`TableOfContents`组件
 - **🆕 useAuth**: 管理后台认证状态管理，JWT token处理
 - **🆕 useMobileDetection**: 移动设备检测，管理后台访问控制
 - **通用模式**: 所有hooks都实现`{data, loading, error, refetch}`模式
@@ -284,6 +309,7 @@ TWITTER_URL=https://twitter.com/username
 ### 关键工具函数 (`src/lib/utils.ts`)
 - `calculateReadingTime()`: 基于字符数计算阅读时间
 - `generateExcerpt()`: 自动生成文章摘要
+- `toMailtoHref()`: 把配置里的邮箱规范成`mailto:`链接。`social.email`允许填裸邮箱或完整`mailto:`链接（`validateSiteConfig`两种都放行），渲染成`href`前必须过一遍这个函数，否则裸邮箱会被当成相对路径
 - 这些函数在文章处理管道中被广泛使用
 
 ### 调试和故障排查
@@ -293,9 +319,10 @@ TWITTER_URL=https://twitter.com/username
 2. **代码高亮问题**: 确认Prism.js语言包是否正确加载
 3. **图片加载失败**: 检查Docker环境下的图片路径映射
 4. **类型错误**: 优先检查`src/types/`中的类型定义
-5. **🆕 管理后台无法访问**: 检查安全入口码是否正确，确认JWT token有效性
-6. **🆕 移动端被限制**: 管理后台仅支持PC端访问，检查设备类型检测
-7. **🆕 认证失效**: 检查Cookie中的JWT token，可能需要重新登录
+5. **🆕 管理后台无法访问**: 先确认URL里的入口码与`config/site.config.json`的`secureEntrance`一致（决定登录页是否出现），再确认密码与`ADMIN_PASSWORD`一致（决定能否登录）
+6. **🆕 登录返回500而非401**: 说明`ADMIN_PASSWORD`或`JWT_SECRET`没配，查看服务端日志会指明缺哪个
+7. **🆕 移动端被限制**: 管理后台仅支持PC端访问，检查设备类型检测
+8. **🆕 认证失效**: 检查Cookie中的JWT token，可能需要重新登录
 
 #### API调试技巧
 ```bash
@@ -311,7 +338,7 @@ curl -X GET "http://localhost:3131/api/posts"
 # 1. 先进行认证获取JWT token
 curl -X POST "http://localhost:3000/api/admin/auth" \
   -H "Content-Type: application/json" \
-  -d '{"secureEntrance": "YOUR_8_CHAR_CODE"}'
+  -d '{"password": "YOUR_ADMIN_PASSWORD"}'
 
 # 2. 使用token访问管理API（替换JWT_TOKEN）
 curl -X GET "http://localhost:3000/api/admin/session" \
