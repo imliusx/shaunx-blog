@@ -68,7 +68,7 @@ CAS + LockSupport 阻塞唤醒
 
 图：AQS state 与 CLH 同步队列结构图
 
-![](images/2026/07/04/aqs-state-clh-queue-structure-placeholder.png)
+![](images/2026/08/27/img-20260827222544145.png)
 
 ## 核心字段：state
 
