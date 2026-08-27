@@ -16,7 +16,9 @@ published: true
 
 ## 引言
 
-Redis 在后端系统中非常常见，登录态、热点数据、排行榜、分布式锁、限流计数、接口结果缓存，都可能用到它。Redis 官方文档可以查看：[Redis Documentation](https://redis.io/docs/latest/)，常用命令可以查看：[Redis Commands](https://redis.io/docs/latest/commands/)。
+Redis 在后端系统中非常常见，登录态、热点数据、排行榜、分布式锁、限流计数、接口结果缓存，都可能用到它。
+
+Redis 官方文档可以查看：[Redis Documentation](https://redis.io/docs/latest/)，常用命令可以查看：[Redis Commands](https://redis.io/docs/latest/commands/)。
 
 很多接口刚开始只查数据库也没问题，但数据量和访问量上来后，数据库压力会明显增加。此时加一层 Redis 缓存，通常能把大部分读请求挡在数据库之前。
 
